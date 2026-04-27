@@ -50,6 +50,18 @@ registerScreen('onboarding', (app) => {
       <button class="btn btn-primary" id="start-btn" style="max-width:300px;">
         Let's go! · يلا! 🚀
       </button>
+      <button class="btn btn-secondary" id="parent-signin-btn" style="max-width:300px;margin-top:14px;font-size:0.9rem;">
+        👨‍👩‍👧 Parent sign-in (sync across devices)
+      </button>
+      <div id="parent-signin-box" style="display:none;max-width:340px;margin:16px auto 0;background:white;border:2px solid var(--teal);border-radius:14px;padding:14px;text-align:left;">
+        <div style="font-size:0.85rem;color:#555;margin-bottom:8px;">
+          Enter your email and we'll send you a one-tap sign-in link.
+        </div>
+        <input type="email" id="parent-email" placeholder="parent@email.com"
+               style="width:100%;padding:10px;border:2px solid #ddd;border-radius:10px;margin-bottom:8px;font-size:0.95rem;box-sizing:border-box;" />
+        <button class="btn" id="parent-send-btn" style="width:100%;">Send sign-in link · أرسل رابط</button>
+        <div id="parent-msg" style="font-size:0.85rem;color:#00897B;margin-top:8px;min-height:1em;"></div>
+      </div>
     </div>
   `;
 
@@ -78,6 +90,33 @@ registerScreen('onboarding', (app) => {
     saveProfile(profile);
     showScreen('home');
   });
+
+  // Parent sign-in toggle + magic link
+  const signinBtn = document.getElementById('parent-signin-btn');
+  const signinBox = document.getElementById('parent-signin-box');
+  if (typeof Sync === 'undefined' || !Sync.isConfigured()) {
+    signinBtn.style.display = 'none';
+  } else {
+    signinBtn.addEventListener('click', () => {
+      const open = signinBox.style.display !== 'none';
+      signinBox.style.display = open ? 'none' : 'block';
+      if (!open) document.getElementById('parent-email').focus();
+    });
+    document.getElementById('parent-send-btn').addEventListener('click', async () => {
+      const email = (document.getElementById('parent-email').value || '').trim();
+      const msg = document.getElementById('parent-msg');
+      if (!email) { msg.style.color = 'var(--coral)'; msg.textContent = 'Enter an email'; return; }
+      msg.style.color = 'var(--teal-dk)';
+      msg.textContent = 'Sending…';
+      try {
+        await Sync.requestMagicLink(email);
+        msg.textContent = '✓ Link sent! Check email and tap the link to sign in.';
+      } catch (e) {
+        msg.style.color = 'var(--coral)';
+        msg.textContent = 'Could not send: ' + e.message;
+      }
+    });
+  }
 });
 
 // ── SCREEN: HOME ──────────────────────────────────────────────────────────────
