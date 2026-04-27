@@ -55,12 +55,11 @@ const Speech = (() => {
     } else if (voices.length > 0) {
       LOG('No Arabic voice found among', voices.length, 'voices. Will use English fallback.');
     }
-    if (!_arabicVoice && voices.length === 0 && _voiceRetries < 15) {
+    if (!_arabicVoice && voices.length === 0 && _voiceRetries < 8) {
       _voiceRetries++;
       setTimeout(_loadVoices, 400);
-    } else if (voices.length === 0 && _voiceRetries >= 15) {
-      WARN('No voices loaded after 15 retries — likely Brave/Firefox privacy block');
-      _showBrowserBanner();
+    } else if (voices.length === 0 && _voiceRetries >= 8) {
+      LOG('No native voices — will use audio-URL fallback');
     }
   }
 
@@ -126,14 +125,39 @@ const Speech = (() => {
   function speakWord(word) {
     if (!word) return;
     if (isMuted()) { LOG('speakWord blocked — muted'); return; }
-    if (!isSupported()) { LOG('speakWord blocked — not supported'); return; }
     _unlock();
-    if (!_arabicVoice) _loadVoices();
-    if (_arabicVoice) {
-      _doSpeak(word.arabic, 'ar');
-    } else {
-      LOG('Falling back to English pronunciation:', word.pronunciation);
-      _doSpeak(word.pronunciation, 'en');
+    if (isSupported()) {
+      if (!_arabicVoice) _loadVoices();
+      if (_arabicVoice) {
+        _doSpeak(word.arabic, 'ar');
+        return;
+      }
+    }
+    // Fallback path: no Arabic voice (Brave / no OS voices) — use audio URL
+    LOG('Using audio-URL fallback for:', word.arabic);
+    _playAudioFallback(word.arabic);
+  }
+
+  // Audio fallback using Google Translate TTS (works in Brave / no-voice envs).
+  // Plain <audio> tag bypasses fetch CORS for media.
+  let _audioEl = null;
+  function _playAudioFallback(text) {
+    try {
+      if (!_audioEl) {
+        _audioEl = new Audio();
+        _audioEl.preload = 'auto';
+        _audioEl.onerror = () => WARN('Audio fallback failed to load');
+        _audioEl.onplay  = () => LOG('Audio fallback playing');
+      }
+      _audioEl.pause();
+      const url = `https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=ar&q=${encodeURIComponent(text)}`;
+      _audioEl.src = url;
+      const p = _audioEl.play();
+      if (p && typeof p.catch === 'function') {
+        p.catch(err => WARN('Audio fallback play() rejected:', err));
+      }
+    } catch (e) {
+      WARN('Audio fallback exception:', e);
     }
   }
 
@@ -143,6 +167,7 @@ const Speech = (() => {
       const synth = window.speechSynthesis;
       if (synth.speaking || synth.pending) synth.cancel();
     }
+    if (_audioEl) { try { _audioEl.pause(); } catch (e) {} }
   }
 
   function scheduleSpeak(word, opts) {
@@ -151,7 +176,7 @@ const Speech = (() => {
     const delay = typeof opts.delay === 'number' ? opts.delay : 2800;
     cancel();
 
-    if (!isSupported() || isMuted()) {
+    if (isMuted()) {
       if (promptEl) promptEl.style.display = 'none';
       return;
     }
