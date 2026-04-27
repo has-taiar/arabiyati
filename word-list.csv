@@ -1,0 +1,179 @@
+﻿#,Arabic,Pronunciation,English,Visual,Category
+1,واحد,waa-hid,One,1️⃣,NUMBERS
+2,اثنين,ith-nayn,Two,2️⃣,NUMBERS
+3,ثلاثة,tha-laa-tha,Three,3️⃣,NUMBERS
+4,أربعة,ar-ba-a,Four,4️⃣,NUMBERS
+5,خمسة,kham-sa,Five,5️⃣,NUMBERS
+6,ستة,sit-ta,Six,6️⃣,NUMBERS
+7,سبعة,sab-a,Seven,7️⃣,NUMBERS
+8,ثمانية,tha-maa-nya,Eight,8️⃣,NUMBERS
+9,تسعة,tis-a,Nine,9️⃣,NUMBERS
+10,عشرة,ash-a-ra,Ten,🔟,NUMBERS
+11,أسود,as-wad,Black,⬛,COLOURS
+12,أبيض,ab-yad,White,⬜,COLOURS
+13,أحمر,ah-mar,Red,🔴,COLOURS
+14,أخضر,akh-dar,Green,🟢,COLOURS
+15,أزرق,az-raq,Blue,🔵,COLOURS
+16,أصفر,as-far,Yellow,🟡,COLOURS
+17,وردي,war-di,Pink,🩷,COLOURS
+18,تمن,tim-man,Rice,🍚,FOOD
+19,فراولة,fa-raw-la,Strawberry,🍓,FOOD
+20,تفاح,tuf-fah,Apple,🍎,FOOD
+21,تمر,tam-mar,Dates (fruit),🌴,FOOD
+22,سكر,suk-kar,Sugar,🍬,FOOD
+23,شاي,shaay,Tea,🍵,FOOD
+24,أكل,ak-kal,Food / to eat,🍽️,FOOD
+25,ماي,maay,Water,💧,FOOD
+26,فواكه,faw-aa-keh,Fruits,🍇,FOOD
+27,دجاج,da-jaaj,Chicken,🍗,FOOD
+28,لحم,la-hem,Meat,🥩,FOOD
+29,خضار,khu-daar,Vegetables,🥦,FOOD
+30,بطيخ,bat-teekh,Watermelon,🍉,FOOD
+31,ياكل,yaa-kul,He eats,😋,ACTIONS
+32,يشرب,yash-rab,He drinks,🥤,ACTIONS
+33,ينام,ya-naam,He sleeps,😴,ACTIONS
+34,يلعب,yal-ab,He plays,⚽,ACTIONS
+35,يمشي,yam-shi,He walks,🚶,ACTIONS
+36,يركض,yar-kud,He runs,🏃,ACTIONS
+37,يسبح,yas-bah,He swims,🏊,ACTIONS
+38,يذهب,yath-hab,He goes,➡️,ACTIONS
+39,فرحان,far-haan,Happy,😄,FEELINGS
+40,زعلان,za-laan,Upset / sad,😢,FEELINGS
+41,تعبان,ta-baan,Tired,😩,FEELINGS
+42,جوعان,jaw-aan,Hungry,🤤,FEELINGS
+43,شبعان,shab-aan,Full (food),😌,FEELINGS
+44,نعسان,naas-aan,Sleepy,😌,FEELINGS
+45,جميل,ja-meel,Beautiful,✨,DESCRIPTIONS
+46,جيد جداً,jay-yid jid-dan,Very good,👍,DESCRIPTIONS
+47,ممتاز,mum-taaz,Excellent,🌟,DESCRIPTIONS
+48,زين,zayn,Good / nice,😊,DESCRIPTIONS
+49,موزين,maw-zeen,Not good,⚖️,DESCRIPTIONS
+50,خوش,hkowsh,Ok / Fine,👌,DESCRIPTIONS
+51,مو خوش,maw-khowsh,Not Good,👎,DESCRIPTIONS
+52,سيارة,say-yaa-ra,Car,🚗,PLACES & THINGS
+53,بيت,bayt,House,🏠,PLACES & THINGS
+54,شارع,shaa-ri,Street,🛣️,PLACES & THINGS
+55,علم,a-lam,Flag,🚩,PLACES & THINGS
+56,غرفة,ghur-fa,Room,🛏️,PLACES & THINGS
+57,شجرة,sha-ja-ra,Tree,🌳,PLACES & THINGS
+58,كومبيوتر,kom-pyoo-ter,Computer,💻,PLACES & THINGS
+59,ميز,meaz,Table / Desk,✨,PLACES & THINGS
+60,عشب,ush-b,Grass,🌿,PLACES & THINGS
+61,يوم,yawm,Day,☀️,TIME
+62,ساعة,saa-a,Hour / clock,⏰,TIME
+63,وقت,waqt,Time,⌚,TIME
+64,سرعة,sur-a,Speed,⚡,TIME
+65,عام / سنة,aam / sa-na,Year,📅,TIME
+66,مشكلة,mush-ki-la,Problem,⚠️,USEFUL
+67,أكو,aa-koo,There is,✅,USEFUL
+68,ماكو,maa-koo,There isn't,❌,USEFUL
+69,مرحبا,Marhaba,Hello,👋,USEFUL
+70,سلام عليكم,Salam Alaykum,Hello,👋,USEFUL
+71,قمر,qa-mar,Moon,🌙,NATURE
+72,شمس,Shams,Sun,☀️,NATURE
+73,أنا \ اني,Ana / ani,I,✨,NATURE
+74,هذا,Hatha,This,👉,USEFUL
+75,هو \ هي,Hooe / Heea,He / She,✨,NATURE
+76,كلش,kulish,very,💯,USEFUL
+77,شلونك,shloo-nak,How are you?,🤝,GREETINGS
+78,شكو ماكو,Shakoo-makoo,How are you going?,👋,NATURE
+79,بابا,baa-ba,Dad,👨,FAMILY
+80,ماما,maa-ma,Mom,👩,FAMILY
+81,أخ,akh,Brother,👦,FAMILY
+82,أخت,ukh-ut,Sister,👧,FAMILY
+83,جدو,jid-doo,Grandfather,👴,FAMILY
+84,جدة,jid-da,Grandmother,👵,FAMILY
+85,عمو,am-mu,Uncle (paternal),🧔,FAMILY
+86,عمة,am-ma,Aunt (paternal),👩‍🦰,FAMILY
+87,خال,khaal,Uncle (maternal),🧔‍♂️,FAMILY
+88,خالة,khaa-la,Aunt (maternal),👩‍🦱,FAMILY
+89,راس,raas,Head,🧠,BODY
+90,عين,ayn,Eye,👁️,BODY
+91,أذن,i-thin,Ear,👂,BODY
+92,فم,fum,Mouth,👄,BODY
+93,يد,eed,Hand,✋,BODY
+94,رجل,rij-il,Leg / foot,🦵,BODY
+95,شعر,sha-ar,Hair,💇,BODY
+96,أنف,an-if,Nose,👃,BODY
+97,قلب,ga-lib,Heart,❤️,BODY
+98,بطن,ba-tin,Tummy,🫃,BODY
+99,حليب,ha-leeb,Milk,🥛,FOOD & DRINK
+100,خبز,khu-biz,Bread,🍞,FOOD & DRINK
+101,قهوة,gah-wa,Coffee,☕,FOOD & DRINK
+102,بيضة,bay-tha,Egg,🥚,FOOD & DRINK
+103,جبن,jib-in,Cheese,🧀,FOOD & DRINK
+104,ملح,mi-lih,Salt,🧂,FOOD & DRINK
+105,سمك,si-mach,Fish,🐟,FOOD & DRINK
+106,حلو,hil-wu,Sweet,🍭,FOOD & DRINK
+107,زيت,zayt,Oil,🫙,FOOD & DRINK
+108,عسل,a-sal,Honey,🍯,FOOD & DRINK
+109,كلب,chal-ib,Dog,🐶,ANIMALS
+110,بزون,bi-zoon,Cat,🐱,ANIMALS
+111,حصان,hu-saan,Horse,🐴,ANIMALS
+112,طير,tayr,Bird,🐦,ANIMALS
+113,بقرة,ba-ga-ra,Cow,🐄,ANIMALS
+114,خروف,khi-roof,Sheep,🐑,ANIMALS
+115,أسد,a-sad,Lion,🦁,ANIMALS
+116,فيل,feel,Elephant,🐘,ANIMALS
+117,دب,dub,Bear,🐻,ANIMALS
+118,أرنب,ar-nab,Rabbit,🐰,ANIMALS
+119,قميص,qa-mees,Shirt,👕,HOME & CLOTHES
+120,بنطرون,ban-ta-roon,Pants,👖,HOME & CLOTHES
+121,جزمة,jaz-ma,Shoes,👟,HOME & CLOTHES
+122,باب,baab,Door,🚪,HOME & CLOTHES
+123,شباك,shu-baach,Window,🪟,HOME & CLOTHES
+124,كرسي,kur-see,Chair,🪑,HOME & CLOTHES
+125,مفتاح,mif-taah,Key,🔑,HOME & CLOTHES
+126,موبايل,moo-baayl,Mobile phone,📱,HOME & CLOTHES
+127,تلفزيون,tal-faz-yoon,Television,📺,HOME & CLOTHES
+128,سرير,sa-reer,Bed,🛏️,HOME & CLOTHES
+129,أريد,a-reed,I want,🙋,MY ACTIONS
+130,أروح,a-rooh,I go,🚶,MY ACTIONS
+131,أجي,a-jee,I come,🏃,MY ACTIONS
+132,آكل,aa-kul,I eat,😋,MY ACTIONS
+133,أشرب,a-shrab,I drink,🥤,MY ACTIONS
+134,أنام,a-naam,I sleep,😴,MY ACTIONS
+135,أحب,a-hib,I love,💖,MY ACTIONS
+136,أشوف,a-shoof,I see,👀,MY ACTIONS
+137,أسمع,as-ma,I hear,👂,MY ACTIONS
+138,أتكلم,at-kal-lam,I speak,🗣️,MY ACTIONS
+139,أعرف,a-ruf,I know,🤔,MY ACTIONS
+140,أقرأ,aq-ra,I read,📖,MY ACTIONS
+141,أكتب,ak-tub,I write,✏️,MY ACTIONS
+142,ألعب,al-ab,I play,🧸,MY ACTIONS
+143,أضحك,ath-hak,I laugh,😂,MY ACTIONS
+144,شنو,shnoo,What?,❓,QUESTIONS
+145,منو,mi-noo,Who?,🙋,QUESTIONS
+146,وين,wayn,Where?,📍,QUESTIONS
+147,شوكت,shwa-kit,When?,⏰,QUESTIONS
+148,ليش,laysh,Why?,🤷,QUESTIONS
+149,شكد,sh-gad,How much?,💰,QUESTIONS
+150,هسه,his-sa,Now,⏱️,QUESTIONS
+151,شكرا,shuk-ran,Thank you,🙏,GREETINGS
+152,عفوا,af-wan,You're welcome,😊,GREETINGS
+153,من فضلك,min fath-lak,Please,🙇,GREETINGS
+154,آسف,aa-sif,Sorry,😔,GREETINGS
+155,ايه,ee,Yes,✅,GREETINGS
+156,لا,laa,No,❌,GREETINGS
+157,طيب,tay-yib,Okay / good,👍,GREETINGS
+158,يلا,ya-lla,Let's go,🏃,GREETINGS
+159,بس,bas,Just / enough,✋,GREETINGS
+160,باجر,baa-chir,Tomorrow,🗓️,GREETINGS
+161,مدرسة,mad-ra-sa,School,🏫,PLACES
+162,مستشفى,mus-tash-fa,Hospital,🏥,PLACES
+163,سوق,sooq,Market,🛒,PLACES
+164,مطعم,mat-am,Restaurant,🍽️,PLACES
+165,دكان,du-kaan,Shop,🏪,PLACES
+166,حديقة,ha-dee-qa,Garden / park,🌳,PLACES
+167,مسجد,mas-jid,Mosque,🕌,PLACES
+168,مطار,ma-taar,Airport,✈️,PLACES
+169,مدينة,ma-dee-na,City,🏙️,PLACES
+170,بحر,ba-har,Sea,🌊,PLACES
+171,مطر,mu-tar,Rain,🌧️,WEATHER
+172,حر,har,Hot,🥵,WEATHER
+173,برد,ba-rid,Cold,🥶,WEATHER
+174,ريح,reeh,Wind,🌬️,WEATHER
+175,ثلج,thalj,Snow,❄️,WEATHER
+176,نجم,nij-im,Star,⭐,WEATHER
+177,سماء,sa-ma,Sky,☁️,WEATHER
+178,نار,naar,Fire,🔥,WEATHER

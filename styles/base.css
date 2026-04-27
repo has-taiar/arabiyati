@@ -1,0 +1,73 @@
+/* base.css — reset, fonts, custom properties */
+
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Amiri:wght@400;700&display=swap');
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --cream:    #FFF9F0;
+  --teal:     #00BFA5;
+  --teal-dk:  #00897B;
+  --yellow:   #FFD600;
+  --coral:    #FF6B6B;
+  --blue:     #42A5F5;
+  --navy:     #1A237E;
+  --purple:   #7C4DFF;
+  --green:    #43A047;
+  --red-soft: #FFCDD2;
+  --grey:     #90A4AE;
+  --white:    #FFFFFF;
+
+  --font-ui:  'Nunito', sans-serif;
+  --font-ar:  'Amiri', serif;
+
+  --radius:   16px;
+  --radius-sm: 10px;
+  --shadow:   0 4px 20px rgba(0,0,0,0.10);
+  --shadow-sm:0 2px 8px rgba(0,0,0,0.08);
+}
+
+html, body {
+  height: 100%;
+  font-family: var(--font-ui);
+  background: var(--cream);
+  color: var(--navy);
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+}
+
+button {
+  font-family: var(--font-ui);
+  cursor: pointer;
+  border: none;
+  outline: none;
+}
+
+button:focus-visible {
+  outline: 3px solid var(--teal);
+  outline-offset: 2px;
+}
+
+.arabic {
+  font-family: var(--font-ar);
+  direction: rtl;
+  unicode-bidi: bidi-override;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  white-space: nowrap;
+}
+
+#app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
