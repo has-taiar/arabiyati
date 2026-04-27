@@ -1,6 +1,7 @@
 // app.js — bootstrap and screen orchestration
 
 const AVATARS = ['🧑‍🚀','🤖','🐱','🐲','🦊','🐸','🦄','🐼'];
+const OFFLINE_OPT_KEY = 'arabiyati_offline_opt';
 
 let profile = null;
 let comboBanner = null;
@@ -17,14 +18,59 @@ document.addEventListener('DOMContentLoaded', async () => {
   badgeToast.className = 'badge-unlock-toast';
   document.body.appendChild(badgeToast);
 
-  // Cloud sync: handle magic-link callback first, then pull remote if signed in.
+  await bootRoute();
+});
+
+async function bootRoute() {
+  // 1. Magic-link callback first (sets JWT and strips URL)
   if (typeof Sync !== 'undefined') {
     try { await Sync.handleAuthCallback(); } catch (e) {}
-    if (Sync.isSignedIn() && Sync.getProfileId()) {
-      try { await Sync.pullToLocal(); } catch (e) {}
-    }
   }
 
+  // 2. Signed in → consult cloud profiles
+  if (typeof Sync !== 'undefined' && Sync.isSignedIn()) {
+    let remotes = null;
+    try { remotes = await Sync.listProfiles(); } catch (e) {}
+
+    if (remotes && remotes.length === 0) {
+      // No child profiles yet — onboarding to create first
+      profile = null;
+      showScreen('onboarding');
+      return;
+    }
+
+    if (remotes && remotes.length >= 1) {
+      // Pick active profile: existing link, or only one, or ask
+      const activeId = Sync.getProfileId();
+      const stillExists = activeId && remotes.some(r => r.id === activeId);
+      if (!stillExists) Sync.setProfileId(null);
+
+      if (remotes.length === 1) {
+        Sync.setProfileId(remotes[0].id);
+        await Sync.pullToLocal();
+      } else if (!Sync.getProfileId()) {
+        showScreen('profilePicker', { profiles: remotes });
+        return;
+      } else {
+        // Already have an active; refresh in background
+        Sync.pullToLocal().catch(() => {});
+      }
+    }
+    // Either remotes==null (offline) or we have an active id — fall through to home
+  }
+
+  // 3. Not signed in: first-time visitor → signin screen (unless they opted offline)
+  profile = loadProfile();
+  const offlineOpted = localStorage.getItem(OFFLINE_OPT_KEY) === '1';
+  const apiAvailable = typeof Sync !== 'undefined' && Sync.isConfigured();
+  const noLocalProfile = !profile || !profile.name;
+
+  if (apiAvailable && !offlineOpted && !((typeof Sync !== 'undefined') && Sync.isSignedIn()) && noLocalProfile) {
+    showScreen('signin');
+    return;
+  }
+
+  // 4. Continue normally
   profile = loadProfile();
   if (!profile || !profile.name) {
     showScreen('onboarding');
@@ -33,35 +79,127 @@ document.addEventListener('DOMContentLoaded', async () => {
     saveProfile(profile);
     showScreen('home');
   }
-});
+}
 
-// ── SCREEN: ONBOARDING ────────────────────────────────────────────────────────
-registerScreen('onboarding', (app) => {
-  let selectedAvatar = 1;
+// ── SCREEN: SIGN IN (first-time visit, parent enters email) ──────────────────
+registerScreen('signin', (app) => {
   app.innerHTML = `
     <div class="onboarding-screen">
       <div class="logo anim-bounce-in">عربيتي</div>
       <div class="logo-sub">Arabiyati · My Arabic</div>
-      <p style="color:#555;margin-bottom:16px;font-size:0.95rem;">Pick your avatar · اختر صورتك</p>
+      <p style="color:#555;max-width:340px;margin:8px auto 18px;font-size:0.95rem;line-height:1.45;">
+        Welcome! Enter your email to get a secure sign-in link.<br>
+        <span style="color:#777;font-size:0.85rem;">No password. Works across all your devices.</span>
+      </p>
+      <input type="email" class="text-input" id="signin-email" placeholder="parent@email.com"
+             style="max-width:300px;margin-bottom:12px;" autocomplete="email" inputmode="email" />
+      <button class="btn btn-primary" id="signin-btn" style="max-width:300px;">
+        Send sign-in link · أرسل الرابط
+      </button>
+      <div id="signin-msg" style="font-size:0.9rem;color:var(--teal-dk);margin-top:12px;min-height:1.2em;max-width:320px;"></div>
+      <button class="link-btn" id="offline-btn" style="margin-top:24px;">
+        Or continue offline (no sync) · استخدم بدون اتصال
+      </button>
+      <p style="color:#999;font-size:0.78rem;margin-top:6px;max-width:320px;line-height:1.4;">
+        You can add an email later from the grown-up area to enable cross-device sync.
+      </p>
+    </div>
+  `;
+
+  const emailInput = document.getElementById('signin-email');
+  const sendBtn = document.getElementById('signin-btn');
+  const msg = document.getElementById('signin-msg');
+
+  async function send() {
+    const email = (emailInput.value || '').trim();
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      msg.style.color = 'var(--coral)';
+      msg.textContent = 'Please enter a valid email';
+      emailInput.focus();
+      return;
+    }
+    sendBtn.disabled = true;
+    msg.style.color = 'var(--teal-dk)';
+    msg.textContent = 'Sending…';
+    try {
+      await Sync.requestMagicLink(email);
+      msg.innerHTML = `✓ Link sent to <b>${email}</b>.<br>Open the email on this device and tap the link.`;
+      sendBtn.textContent = 'Resend';
+      sendBtn.disabled = false;
+    } catch (e) {
+      msg.style.color = 'var(--coral)';
+      msg.textContent = 'Could not send: ' + e.message;
+      sendBtn.disabled = false;
+    }
+  }
+
+  sendBtn.addEventListener('click', send);
+  emailInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') send(); });
+
+  document.getElementById('offline-btn').addEventListener('click', () => {
+    localStorage.setItem(OFFLINE_OPT_KEY, '1');
+    showScreen('onboarding');
+  });
+});
+
+// ── SCREEN: PROFILE PICKER (signed-in, multiple kids) ─────────────────────────
+registerScreen('profilePicker', (app, { profiles }) => {
+  app.innerHTML = `
+    <div class="onboarding-screen">
+      <div class="logo anim-bounce-in" style="font-size:2.6rem;">عربيتي</div>
+      <div class="logo-sub" style="font-size:1.05rem;">Who's playing? · من يلعب؟</div>
+      <div class="profile-picker-grid" id="picker-grid"></div>
+      <button class="btn btn-secondary" id="add-child-btn" style="max-width:300px;margin-top:16px;">
+        ➕ Add child · أضف طفلاً
+      </button>
+    </div>
+  `;
+  const grid = document.getElementById('picker-grid');
+  profiles.forEach(p => {
+    const btn = document.createElement('button');
+    btn.className = 'picker-card';
+    btn.innerHTML = `
+      <span class="picker-avatar">${AVATARS[(p.avatar || 1) - 1]}</span>
+      <span class="picker-name">${p.name || '—'}</span>
+    `;
+    btn.addEventListener('click', async () => {
+      Sync.setProfileId(p.id);
+      btn.classList.add('loading');
+      await Sync.pullToLocal();
+      profile = loadProfile();
+      updateStreak(profile);
+      saveProfile(profile);
+      showScreen('home');
+    });
+    grid.appendChild(btn);
+  });
+  document.getElementById('add-child-btn').addEventListener('click', () => {
+    Sync.setProfileId(null);
+    profile = null;
+    showScreen('onboarding');
+  });
+});
+registerScreen('onboarding', (app) => {
+  let selectedAvatar = 1;
+  const signedIn = (typeof Sync !== 'undefined' && Sync.isSignedIn());
+  const heading = signedIn
+    ? `Create a child profile · أضف ملف الطفل`
+    : `Pick your avatar · اختر صورتك`;
+  const namePrompt = signedIn ? `Child's name · اسم الطفل` : `What's your name? · ما اسمك؟`;
+  const namePlaceholder = signedIn ? 'Child name…' : 'Enter your name…';
+
+  app.innerHTML = `
+    <div class="onboarding-screen">
+      <div class="logo anim-bounce-in">عربيتي</div>
+      <div class="logo-sub">Arabiyati · My Arabic</div>
+      <p style="color:#555;margin-bottom:16px;font-size:0.95rem;">${heading}</p>
       <div class="avatar-picker" id="avatar-picker"></div>
-      <p style="color:#555;margin-bottom:8px;font-size:0.95rem;">What's your name? · ما اسمك؟</p>
-      <input class="text-input" id="name-input" placeholder="Enter your name…" maxlength="24"
+      <p style="color:#555;margin-bottom:8px;font-size:0.95rem;">${namePrompt}</p>
+      <input class="text-input" id="name-input" placeholder="${namePlaceholder}" maxlength="24"
              style="max-width:300px;margin-bottom:20px;" />
       <button class="btn btn-primary" id="start-btn" style="max-width:300px;">
         Let's go! · يلا! 🚀
       </button>
-      <button class="btn btn-secondary" id="parent-signin-btn" style="max-width:300px;margin-top:14px;font-size:0.9rem;">
-        👨‍👩‍👧 Parent sign-in (sync across devices)
-      </button>
-      <div id="parent-signin-box" style="display:none;max-width:340px;margin:16px auto 0;background:white;border:2px solid var(--teal);border-radius:14px;padding:14px;text-align:left;">
-        <div style="font-size:0.85rem;color:#555;margin-bottom:8px;">
-          Enter your email and we'll send you a one-tap sign-in link.
-        </div>
-        <input type="email" id="parent-email" placeholder="parent@email.com"
-               style="width:100%;padding:10px;border:2px solid #ddd;border-radius:10px;margin-bottom:8px;font-size:0.95rem;box-sizing:border-box;" />
-        <button class="btn" id="parent-send-btn" style="width:100%;">Send sign-in link · أرسل رابط</button>
-        <div id="parent-msg" style="font-size:0.85rem;color:#00897B;margin-top:8px;min-height:1em;"></div>
-      </div>
     </div>
   `;
 
@@ -78,7 +216,7 @@ registerScreen('onboarding', (app) => {
     picker.appendChild(btn);
   });
 
-  document.getElementById('start-btn').addEventListener('click', () => {
+  document.getElementById('start-btn').addEventListener('click', async () => {
     const name = document.getElementById('name-input').value.trim();
     if (!name) {
       document.getElementById('name-input').focus();
@@ -87,55 +225,64 @@ registerScreen('onboarding', (app) => {
     }
     profile = createProfile(name, selectedAvatar);
     updateStreak(profile);
+
+    // If signed in and no remote profile yet, create one silently
+    if (typeof Sync !== 'undefined' && Sync.isSignedIn() && !Sync.getProfileId()) {
+      try {
+        const id = await Sync.createRemoteProfile(name, selectedAvatar);
+        Sync.setProfileId(id);
+      } catch (e) { /* offline / failure: keep local only */ }
+    }
+
     saveProfile(profile);
     showScreen('home');
   });
-
-  // Parent sign-in toggle + magic link
-  const signinBtn = document.getElementById('parent-signin-btn');
-  const signinBox = document.getElementById('parent-signin-box');
-  if (typeof Sync === 'undefined' || !Sync.isConfigured()) {
-    signinBtn.style.display = 'none';
-  } else {
-    signinBtn.addEventListener('click', () => {
-      const open = signinBox.style.display !== 'none';
-      signinBox.style.display = open ? 'none' : 'block';
-      if (!open) document.getElementById('parent-email').focus();
-    });
-    document.getElementById('parent-send-btn').addEventListener('click', async () => {
-      const email = (document.getElementById('parent-email').value || '').trim();
-      const msg = document.getElementById('parent-msg');
-      if (!email) { msg.style.color = 'var(--coral)'; msg.textContent = 'Enter an email'; return; }
-      msg.style.color = 'var(--teal-dk)';
-      msg.textContent = 'Sending…';
-      try {
-        await Sync.requestMagicLink(email);
-        msg.textContent = '✓ Link sent! Check email and tap the link to sign in.';
-      } catch (e) {
-        msg.style.color = 'var(--coral)';
-        msg.textContent = 'Could not send: ' + e.message;
-      }
-    });
-  }
 });
 
 // ── SCREEN: HOME ──────────────────────────────────────────────────────────────
 registerScreen('home', (app) => {
+  const modes = [
+    { id: 'flashcard',      icon: '🃏', en: 'Flash Cards',     ar: 'البطاقات' },
+    { id: 'multipleChoice', icon: '🔤', en: 'Multiple Choice', ar: 'اختيار' },
+    { id: 'connectColumns', icon: '🔗', en: 'Connect',         ar: 'وصّل' },
+    { id: 'dragDrop',       icon: '🧲', en: 'Drag & Drop',     ar: 'اسحب' },
+    { id: 'challengeMix',   icon: '🔀', en: 'Challenge',       ar: 'تحدي' },
+  ];
+
   app.innerHTML = `
     ${topBar()}
     <div class="home-screen">
-      <button class="quick-play-btn anim-pulse" id="quick-play">
-        ⚡ Quick Play · لعب سريع
-      </button>
-      <h2>Categories · الفئات</h2>
+      <h2 class="home-section-title">⚡ Quick Play · لعب سريع</h2>
+      <p class="home-section-sub">${WORDS.length} words from all categories — tap a game to start</p>
+      <div class="game-mode-grid" id="qp-grid"></div>
+
+      <h2 class="home-section-title" style="margin-top:24px;">📚 Categories · الفئات</h2>
+      <p class="home-section-sub">Pick a topic to focus on</p>
       <div class="category-grid" id="cat-grid"></div>
     </div>
   `;
 
   wireTopBar();
 
-  document.getElementById('quick-play').addEventListener('click', () => {
-    showScreen('quickPlay');
+  const qpGrid = document.getElementById('qp-grid');
+  modes.forEach(mode => {
+    const btn = document.createElement('button');
+    btn.className = 'game-mode-card';
+    btn.innerHTML = `
+      <span class="game-mode-icon">${mode.icon}</span>
+      <span class="game-mode-en">${mode.en}</span>
+      <span class="game-mode-ar arabic">${mode.ar}</span>
+    `;
+    btn.addEventListener('click', () => {
+      const gameWords = shuffle([...WORDS]).slice(0, 20);
+      showScreen('game', {
+        words: gameWords,
+        mode: mode.id,
+        categoryKey: '__quick__',
+        label: `⚡ Quick Play · لعب سريع`,
+      });
+    });
+    qpGrid.appendChild(btn);
   });
 
   const grid = document.getElementById('cat-grid');
@@ -424,11 +571,11 @@ registerScreen('profile', (app) => {
     ${topBar()}
     <div class="profile-screen">
       <button class="btn btn-secondary" id="back-home" style="margin-bottom:14px;">← Back · رجوع</button>
-      <div style="display:flex;align-items:center;gap:14px;margin-bottom:16px;">
-        <span style="font-size:3.5rem;">${AVATARS[(profile.avatar || 1) - 1]}</span>
+      <div class="profile-header">
+        <span class="profile-avatar">${AVATARS[(profile.avatar || 1) - 1]}</span>
         <div>
-          <div style="font-size:1.4rem;font-weight:900;">${profile.name}</div>
-          <div style="font-size:0.9rem;color:#777;">Days played: ${profile.daysPlayed || 0}</div>
+          <div class="profile-name">${profile.name}</div>
+          <div class="profile-sub">Days played: ${profile.daysPlayed || 0}</div>
         </div>
       </div>
       <div class="stat-row">
@@ -439,10 +586,18 @@ registerScreen('profile', (app) => {
       </div>
       <div class="section-header">Badges · الشارات</div>
       <div class="badge-grid" id="badge-grid"></div>
-      <div class="section-header" style="margin-top:28px;">☁️ Cloud Sync · المزامنة</div>
-      <div id="sync-section" style="background:white;border-radius:14px;padding:14px;border:2px solid var(--teal);"></div>
-      <div class="section-header" style="margin-top:28px;">Danger Zone · منطقة الخطر</div>
-      <button class="btn-danger" id="reset-btn">Reset Progress · إعادة التعيين</button>
+
+      <div class="grownup-card" id="grownup-card">
+        <div class="grownup-locked" id="grownup-locked">
+          <span class="grownup-icon">🔒</span>
+          <div>
+            <div class="grownup-title">Grown-up area · للكبار</div>
+            <div class="grownup-sub">Sign out · switch profile · cloud sync</div>
+          </div>
+          <span class="grownup-tap">Tap →</span>
+        </div>
+        <div class="grownup-unlocked" id="grownup-unlocked" style="display:none;"></div>
+      </div>
     </div>
   `;
 
@@ -458,123 +613,153 @@ registerScreen('profile', (app) => {
     grid.appendChild(item);
   });
 
-  document.getElementById('reset-btn').addEventListener('click', () => {
-    const age = prompt('How old are you? · كم عمرك؟\n(Adults only / للكبار فقط)');
-    if (age === null) return;
-    const n = parseInt(age, 10);
-    if (isNaN(n) || n < 18) {
-      alert('Ask a grown-up to help with this! 😊\nاطلب من شخص كبير المساعدة!');
-      return;
-    }
-    if (confirm('Are you sure? All progress will be lost. · هل أنت متأكد؟ سيتم حذف كل التقدم.')) {
-      resetProfile();
-      profile = null;
-      showScreen('onboarding');
-    }
+  document.getElementById('grownup-locked').addEventListener('click', () => {
+    askMathGate(() => {
+      document.getElementById('grownup-locked').style.display = 'none';
+      const u = document.getElementById('grownup-unlocked');
+      u.style.display = 'block';
+      renderGrownupArea(u);
+    });
   });
-
-  renderSyncSection();
 });
 
-function renderSyncSection() {
-  const el = document.getElementById('sync-section');
-  if (!el) return;
-  if (typeof Sync === 'undefined' || !Sync.isConfigured()) {
-    el.innerHTML = `<div style="color:#888;font-size:0.9rem;">Cloud sync is not configured for this site. Progress is stored only on this device.</div>`;
-    return;
-  }
+// ── Math gate (parental gate) ─────────────────────────────────────────────────
+function askMathGate(onSuccess) {
+  // pick two numbers 2..9
+  const a = 2 + Math.floor(Math.random() * 8);
+  const b = 2 + Math.floor(Math.random() * 8);
+  const answer = a + b;
 
-  if (!Sync.isSignedIn()) {
-    el.innerHTML = `
-      <div style="font-size:0.9rem;color:#555;margin-bottom:8px;">
-        Sign in (parent only) to back up progress and sync across devices.
+  const overlay = document.createElement('div');
+  overlay.className = 'modal-overlay';
+  overlay.innerHTML = `
+    <div class="modal-card">
+      <div class="modal-title">🔒 Grown-up check</div>
+      <div class="modal-q">What is <b>${a} + ${b}</b>?</div>
+      <input type="tel" inputmode="numeric" class="modal-input" id="math-input" autocomplete="off" />
+      <div class="modal-msg" id="math-msg"></div>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" id="math-cancel">Cancel</button>
+        <button class="btn btn-primary" id="math-ok">OK</button>
       </div>
-      <input type="email" id="sync-email" placeholder="parent@email.com" style="width:100%;padding:10px;border:2px solid #ddd;border-radius:10px;margin-bottom:8px;font-size:0.95rem;" />
-      <button class="btn" id="sync-link-btn" style="width:100%;">Send sign-in link · أرسل رابط تسجيل</button>
-      <div id="sync-msg" style="font-size:0.85rem;color:#00897B;margin-top:8px;"></div>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+  const input = overlay.querySelector('#math-input');
+  const msg = overlay.querySelector('#math-msg');
+  setTimeout(() => input.focus(), 50);
+
+  function close() { overlay.remove(); }
+  function check() {
+    const v = parseInt((input.value || '').trim(), 10);
+    if (v === answer) { close(); onSuccess(); }
+    else {
+      msg.textContent = 'Hmm, try again.';
+      input.value = '';
+      input.focus();
+    }
+  }
+  overlay.querySelector('#math-ok').addEventListener('click', check);
+  overlay.querySelector('#math-cancel').addEventListener('click', close);
+  input.addEventListener('keydown', (e) => { if (e.key === 'Enter') check(); });
+  overlay.addEventListener('click', (e) => { if (e.target === overlay) close(); });
+}
+
+// ── Grown-up area content ─────────────────────────────────────────────────────
+async function renderGrownupArea(container) {
+  const signedIn = (typeof Sync !== 'undefined' && Sync.isSignedIn());
+  const apiAvailable = typeof Sync !== 'undefined' && Sync.isConfigured();
+
+  // Build sections
+  let html = `<div class="grownup-header">👨‍👩‍👧 Grown-up area</div>`;
+
+  if (signedIn) {
+    html += `
+      <div class="gu-row">
+        <div class="gu-label">Signed in as</div>
+        <div class="gu-value">${Sync.getEmail() || ''}</div>
+      </div>
+      <div class="gu-row gu-actions">
+        <button class="btn btn-secondary gu-btn" id="gu-switch">Switch / add child</button>
+        <button class="btn btn-secondary gu-btn gu-danger" id="gu-signout">Sign out</button>
+      </div>
     `;
-    document.getElementById('sync-link-btn').addEventListener('click', async () => {
-      const email = (document.getElementById('sync-email').value || '').trim();
-      const msg = document.getElementById('sync-msg');
-      if (!email) { msg.style.color = 'var(--coral)'; msg.textContent = 'Enter an email'; return; }
-      msg.style.color = 'var(--teal-dk)';
-      msg.textContent = 'Sending…';
-      try {
-        await Sync.requestMagicLink(email);
-        msg.textContent = '✓ Link sent! Check email and tap the link.';
-      } catch (e) {
-        msg.style.color = 'var(--coral)';
-        msg.textContent = 'Could not send: ' + e.message;
-      }
-    });
-    return;
+  } else if (apiAvailable) {
+    // Offline-only mode → offer add-email
+    html += `
+      <div class="gu-row">
+        <div class="gu-label">Cloud sync</div>
+        <div class="gu-value gu-muted">Off (offline only)</div>
+      </div>
+      <div class="gu-add-email">
+        <p class="gu-help">Add an email to back up progress and sync across devices.</p>
+        <input type="email" class="text-input" id="gu-email" placeholder="parent@email.com" autocomplete="email" inputmode="email" />
+        <button class="btn btn-primary gu-btn" id="gu-send-link">Send sign-in link</button>
+        <div class="gu-msg" id="gu-msg"></div>
+      </div>
+    `;
   }
 
-  // Signed in — show profile linking & sign-out
-  const email = Sync.getEmail() || '';
-  const remoteId = Sync.getProfileId();
-  const last = parseInt(localStorage.getItem('arabiyati_last_sync') || '0', 10);
-  const lastStr = last ? new Date(last).toLocaleString() : 'never';
-
-  el.innerHTML = `
-    <div style="font-size:0.85rem;color:#555;">Signed in as <b>${email}</b></div>
-    <div style="font-size:0.8rem;color:#888;margin-bottom:10px;">Last synced: ${lastStr}</div>
-    <div id="sync-profile-row" style="margin-bottom:10px;"></div>
-    <div style="display:flex;gap:8px;">
-      <button class="btn btn-secondary" id="sync-now-btn" style="flex:1;">⬆ Sync now</button>
-      <button class="btn btn-secondary" id="sync-pull-btn" style="flex:1;">⬇ Pull from cloud</button>
-    </div>
-    <button class="btn btn-secondary" id="sync-out-btn" style="width:100%;margin-top:8px;color:var(--coral);border-color:var(--coral);">Sign out · تسجيل الخروج</button>
-    <div id="sync-msg" style="font-size:0.85rem;color:#00897B;margin-top:8px;"></div>
+  html += `
+    <div class="gu-divider"></div>
+    <button class="btn-danger gu-btn" id="gu-reset">Reset this profile's progress</button>
   `;
 
-  const msg = document.getElementById('sync-msg');
-  const setMsg = (text, ok = true) => {
-    msg.style.color = ok ? 'var(--teal-dk)' : 'var(--coral)';
-    msg.textContent = text;
-  };
+  container.innerHTML = html;
 
-  // Profile linking row
-  const row = document.getElementById('sync-profile-row');
-  if (!remoteId) {
-    row.innerHTML = `
-      <div style="font-size:0.85rem;margin-bottom:6px;">This device's profile is not linked to a cloud profile yet.</div>
-      <button class="btn" id="sync-create-btn" style="width:100%;">Create cloud profile for ${profile.name}</button>
-    `;
-    document.getElementById('sync-create-btn').addEventListener('click', async () => {
+  // Wire up actions
+  if (signedIn) {
+    container.querySelector('#gu-signout').addEventListener('click', () => {
+      if (!confirm('Sign out? Cloud sync will stop. Local progress on this device stays.')) return;
+      Sync.signOut();
+      // Re-route to signin (or onboarding offline)
+      bootRoute();
+    });
+
+    container.querySelector('#gu-switch').addEventListener('click', async () => {
+      let remotes = [];
+      try { remotes = await Sync.listProfiles(); } catch (e) {}
+      Sync.setProfileId(null);
+      profile = null;
+      if (remotes.length === 0) showScreen('onboarding');
+      else                     showScreen('profilePicker', { profiles: remotes });
+    });
+  } else if (apiAvailable) {
+    const sendBtn = container.querySelector('#gu-send-link');
+    const emailInput = container.querySelector('#gu-email');
+    const msgEl = container.querySelector('#gu-msg');
+    sendBtn.addEventListener('click', async () => {
+      const email = (emailInput.value || '').trim();
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        msgEl.style.color = 'var(--coral)';
+        msgEl.textContent = 'Please enter a valid email';
+        return;
+      }
+      sendBtn.disabled = true;
+      msgEl.style.color = 'var(--teal-dk)';
+      msgEl.textContent = 'Sending…';
       try {
-        const id = await Sync.createRemoteProfile(profile.name, profile.avatar);
-        Sync.setProfileId(id);
-        await Sync.flush(profile);
-        setMsg('✓ Cloud profile created and synced.');
-        renderSyncSection();
+        await Sync.requestMagicLink(email);
+        // Clear the offline opt-in so future visits go through the standard signed-in path
+        localStorage.removeItem(OFFLINE_OPT_KEY);
+        msgEl.innerHTML = `✓ Link sent to <b>${email}</b>. Open it on this device to finish sign-in.`;
+        sendBtn.textContent = 'Resend';
+        sendBtn.disabled = false;
       } catch (e) {
-        setMsg('Could not create: ' + e.message, false);
+        msgEl.style.color = 'var(--coral)';
+        msgEl.textContent = 'Could not send: ' + e.message;
+        sendBtn.disabled = false;
       }
     });
-  } else {
-    row.innerHTML = `<div style="font-size:0.85rem;color:#555;">Linked profile: <code>${remoteId.slice(0, 8)}…</code></div>`;
   }
 
-  document.getElementById('sync-now-btn').addEventListener('click', async () => {
-    setMsg('Syncing…');
-    try { await Sync.flush(profile); setMsg('✓ Synced'); renderSyncSection(); }
-    catch (e) { setMsg('Failed: ' + e.message, false); }
-  });
-  document.getElementById('sync-pull-btn').addEventListener('click', async () => {
-    if (!confirm('Replace local progress with the cloud copy?')) return;
-    setMsg('Pulling…');
-    try {
-      await Sync.pullToLocal();
-      profile = loadProfile();
-      setMsg('✓ Pulled from cloud');
-      showScreen('profile');
-    } catch (e) { setMsg('Failed: ' + e.message, false); }
-  });
-  document.getElementById('sync-out-btn').addEventListener('click', () => {
-    if (!confirm('Sign out? Local progress stays on this device.')) return;
-    Sync.signOut();
-    renderSyncSection();
+  container.querySelector('#gu-reset').addEventListener('click', () => {
+    if (!confirm('Reset this profile\'s progress? This cannot be undone.')) return;
+    resetProfile();
+    profile = null;
+    // Also clear remote link so they'll get re-onboarded cleanly
+    if (typeof Sync !== 'undefined') Sync.setProfileId(null);
+    bootRoute();
   });
 }
 

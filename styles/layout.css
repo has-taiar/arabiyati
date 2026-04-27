@@ -55,15 +55,20 @@
 /* ── HOME SCREEN ── */
 .home-screen {
   padding: 16px;
-  max-width: 640px;
+  max-width: 720px;
   margin: 0 auto;
   width: 100%;
 }
-.home-screen h2 {
-  font-size: 1.4rem;
+.home-screen h2.home-section-title {
+  font-size: 1.2rem;
   font-weight: 900;
-  margin-bottom: 14px;
   color: var(--teal-dk);
+  margin: 0 0 4px;
+}
+.home-screen .home-section-sub {
+  color: #777;
+  font-size: 0.85rem;
+  margin-bottom: 12px;
 }
 .quick-play-btn {
   width: 100%;
@@ -80,6 +85,37 @@
 .quick-play-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(0,191,165,0.35); }
 .quick-play-btn:active { transform: translateY(0); }
 
+/* ── GAME MODE GRID (top of home) ── */
+.game-mode-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+@media (min-width: 480px) { .game-mode-grid { grid-template-columns: repeat(3, 1fr); } }
+@media (min-width: 720px) { .game-mode-grid { grid-template-columns: repeat(5, 1fr); } }
+
+.game-mode-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 14px 8px;
+  border-radius: var(--radius);
+  background: linear-gradient(135deg, #FFFFFF, #F0FDFA);
+  box-shadow: var(--shadow-sm);
+  border: 2px solid transparent;
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
+  min-height: 96px;
+}
+.game-mode-card:hover { transform: translateY(-3px); box-shadow: var(--shadow); border-color: var(--teal); }
+.game-mode-card:active { transform: translateY(0); }
+.game-mode-card .game-mode-icon { font-size: 2rem; line-height: 1; }
+.game-mode-card .game-mode-en { font-weight: 800; font-size: 0.85rem; color: var(--navy); }
+.game-mode-card .game-mode-ar { font-size: 0.85rem; font-family: var(--font-ar); color: var(--teal-dk); }
+
 /* ── CATEGORY GRID ── */
 .category-grid {
   display: grid;
@@ -88,6 +124,9 @@
 }
 @media (min-width: 480px) {
   .category-grid { grid-template-columns: repeat(3, 1fr); }
+}
+@media (min-width: 720px) {
+  .category-grid { grid-template-columns: repeat(4, 1fr); }
 }
 
 .cat-card {
@@ -265,3 +304,235 @@
 }
 .avatar-option.selected { border-color: var(--teal); transform: scale(1.1); }
 .avatar-option:hover { border-color: var(--teal); }
+
+/* ── LINK BUTTON (text-style action) ── */
+.link-btn {
+  background: transparent;
+  color: var(--teal-dk);
+  font-weight: 700;
+  font-size: 0.92rem;
+  text-decoration: underline;
+  padding: 6px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  border: none;
+}
+.link-btn:hover { color: var(--teal); }
+
+/* ── PROFILE PICKER (signed-in, multi-kid) ── */
+.profile-picker-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  width: 100%;
+  max-width: 420px;
+  margin: 8px auto 0;
+}
+@media (min-width: 480px) {
+  .profile-picker-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); max-width: 560px; }
+}
+.picker-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 18px 10px;
+  background: var(--white);
+  border-radius: var(--radius);
+  border: 2px solid transparent;
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
+  min-height: 120px;
+}
+.picker-card:hover { transform: translateY(-2px); box-shadow: var(--shadow); border-color: var(--teal); }
+.picker-card.loading { opacity: 0.6; pointer-events: none; }
+.picker-card .picker-avatar { font-size: 2.6rem; line-height: 1; }
+.picker-card .picker-name {
+  font-weight: 800;
+  font-size: 0.95rem;
+  color: var(--navy);
+  text-align: center;
+  word-break: break-word;
+}
+
+/* ── PROFILE HEADER ── */
+.profile-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+.profile-header .profile-avatar { font-size: 3.2rem; line-height: 1; }
+.profile-header .profile-name { font-size: 1.3rem; font-weight: 900; color: var(--navy); }
+.profile-header .profile-sub { font-size: 0.85rem; color: #777; }
+
+/* ── GROWN-UP AREA ── */
+.grownup-card {
+  margin-top: 28px;
+  background: var(--white);
+  border-radius: var(--radius);
+  border: 2px dashed var(--grey);
+  overflow: hidden;
+}
+.grownup-locked {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.grownup-locked:hover { background: #FAFAFA; }
+.grownup-locked .grownup-icon { font-size: 1.5rem; }
+.grownup-locked .grownup-title { font-weight: 800; color: var(--navy); font-size: 0.95rem; }
+.grownup-locked .grownup-sub { font-size: 0.78rem; color: #777; margin-top: 2px; }
+.grownup-locked .grownup-tap { margin-left: auto; color: var(--teal-dk); font-weight: 700; font-size: 0.85rem; }
+.grownup-unlocked { padding: 16px; }
+.grownup-header {
+  font-weight: 900;
+  font-size: 0.95rem;
+  color: var(--navy);
+  margin-bottom: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.gu-row {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 0;
+  border-bottom: 1px solid #F0F0F0;
+}
+.gu-row .gu-label { font-size: 0.75rem; color: #888; text-transform: uppercase; letter-spacing: 0.04em; }
+.gu-row .gu-value { font-size: 0.95rem; font-weight: 700; color: var(--navy); word-break: break-all; }
+.gu-row .gu-muted { color: #999; font-weight: 500; }
+.gu-row.gu-actions {
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 8px;
+  border-bottom: none;
+  padding-top: 10px;
+}
+.gu-btn {
+  flex: 1 1 140px;
+  font-size: 0.88rem;
+  padding: 10px 14px;
+}
+.gu-btn.gu-danger {
+  color: var(--coral);
+  border-color: var(--coral);
+}
+.gu-btn.gu-danger:hover { background: var(--red-soft); }
+.gu-divider {
+  height: 1px;
+  background: #EEE;
+  margin: 14px 0;
+}
+.gu-add-email {
+  padding: 10px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.gu-add-email .gu-help { font-size: 0.85rem; color: #555; line-height: 1.45; }
+.gu-msg { font-size: 0.85rem; color: var(--teal-dk); min-height: 1em; }
+
+/* ── MODAL (math gate, etc.) ── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  z-index: 1000;
+  animation: fadeIn 0.15s ease;
+}
+.modal-card {
+  background: var(--white);
+  border-radius: var(--radius);
+  padding: 22px;
+  max-width: 360px;
+  width: 100%;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+  animation: bounceIn 0.25s ease;
+}
+.modal-title { font-size: 1.1rem; font-weight: 900; color: var(--navy); margin-bottom: 12px; }
+.modal-q { font-size: 1.05rem; margin-bottom: 12px; color: var(--navy); }
+.modal-q b { color: var(--teal-dk); font-size: 1.3rem; }
+.modal-input {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid var(--teal);
+  border-radius: var(--radius-sm);
+  font-size: 1.4rem;
+  text-align: center;
+  font-weight: 800;
+  outline: none;
+  margin-bottom: 8px;
+}
+.modal-msg { font-size: 0.85rem; color: var(--coral); min-height: 1.1em; margin-bottom: 8px; }
+.modal-actions { display: flex; gap: 8px; justify-content: flex-end; }
+.modal-actions .btn { padding: 9px 16px; font-size: 0.9rem; }
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+/* ── MOBILE / SMALL SCREEN POLISH ── */
+@media (max-width: 480px) {
+  .top-bar {
+    padding: 10px 12px;
+    gap: 6px;
+    flex-wrap: nowrap;
+  }
+  .top-bar .user-name {
+    font-size: 0.9rem;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .top-bar .stars-badge,
+  .top-bar .streak-badge {
+    font-size: 0.78rem;
+    padding: 3px 8px;
+    flex-shrink: 0;
+  }
+  .top-bar .btn-icon { font-size: 1.2rem; padding: 4px; flex-shrink: 0; }
+  .top-bar .avatar-sm { width: 32px; height: 32px; font-size: 1.4rem; flex-shrink: 0; }
+
+  .home-screen { padding: 12px; }
+  .home-screen h2.home-section-title { font-size: 1.05rem; }
+  .game-mode-card { min-height: 84px; padding: 10px 6px; }
+  .game-mode-card .game-mode-icon { font-size: 1.7rem; }
+  .game-mode-card .game-mode-en { font-size: 0.78rem; }
+  .game-mode-card .game-mode-ar { font-size: 0.78rem; }
+
+  .cat-card { padding: 10px 6px 8px; }
+  .cat-card .cat-emoji { font-size: 1.6rem; }
+  .cat-card .cat-name-en { font-size: 0.75rem; }
+  .cat-card .cat-name-ar { font-size: 0.72rem; }
+
+  .onboarding-screen { padding: 24px 16px; min-height: auto; }
+  .onboarding-screen .logo { font-size: 2.8rem; }
+  .onboarding-screen .logo-sub { font-size: 1.05rem; margin-bottom: 18px; }
+  .avatar-option { width: 54px; height: 54px; font-size: 1.8rem; }
+
+  .profile-screen { padding: 14px 12px; }
+  .profile-header .profile-avatar { font-size: 2.6rem; }
+  .profile-header .profile-name { font-size: 1.1rem; }
+  .stat-row { padding: 10px; gap: 4px; }
+  .stat-row .stat-val { font-size: 1.3rem; }
+  .stat-row .stat-lbl { font-size: 0.68rem; }
+  .gu-btn { flex-basis: 100%; }
+}
+
+/* Small phones (≤360px) */
+@media (max-width: 360px) {
+  .top-bar .stars-badge,
+  .top-bar .streak-badge { display: none; }
+  .game-mode-grid { grid-template-columns: repeat(2, 1fr); }
+  .avatar-option { width: 48px; height: 48px; font-size: 1.6rem; }
+}
