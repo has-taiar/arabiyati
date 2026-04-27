@@ -5,6 +5,7 @@ const Speech = (() => {
   const MUTE_KEY = 'arabiyati_speech_muted';
   let _arabicVoice = null;
   let _pendingTimeout = null;
+  let _voiceRetries = 0;
 
   // ── Support & Mute ────────────────────────────────────────────────────────
   function isSupported() {
@@ -30,7 +31,6 @@ const Speech = (() => {
   function _loadVoices() {
     if (!isSupported()) return;
     const voices = window.speechSynthesis.getVoices();
-    // Prefer Gulf Arabic dialects first, then any Arabic voice
     _arabicVoice =
       voices.find(v => v.lang === 'ar-IQ') ||
       voices.find(v => v.lang === 'ar-SA') ||
@@ -38,12 +38,22 @@ const Speech = (() => {
       voices.find(v => v.lang === 'ar-EG') ||
       voices.find(v => v.lang.startsWith('ar')) ||
       null;
+    // Retry up to 10 times if voices haven't loaded yet (Chrome async loading)
+    if (!_arabicVoice && voices.length === 0 && _voiceRetries < 10) {
+      _voiceRetries++;
+      setTimeout(_loadVoices, 300);
+    }
   }
 
   // ── Core speak ────────────────────────────────────────────────────────────
   function _doSpeak(text, lang) {
     if (!isSupported() || isMuted()) return;
+
+    // Chrome bug: synthesis can get silently paused after page idle.
+    // Must cancel(), then resume(), then speak() with a small delay.
     window.speechSynthesis.cancel();
+    window.speechSynthesis.resume();
+
     const utt = new SpeechSynthesisUtterance(text);
     if (lang === 'ar' && _arabicVoice) {
       utt.voice = _arabicVoice;
@@ -53,12 +63,18 @@ const Speech = (() => {
     }
     utt.rate = 0.82;   // slightly slow for kids
     utt.pitch = 1.05;
-    window.speechSynthesis.speak(utt);
+
+    // Small delay ensures cancel() has fully settled before speak() (Chrome quirk)
+    setTimeout(() => {
+      if (!isMuted()) window.speechSynthesis.speak(utt);
+    }, 80);
   }
 
   // Speak a word object — Arabic if voice available, else phonetic pronunciation
   function speakWord(word) {
     if (isMuted() || !isSupported()) return;
+    // Re-try loading voices if they weren't ready at init time
+    if (!_arabicVoice) _loadVoices();
     if (_arabicVoice) {
       _doSpeak(word.arabic, 'ar');
     } else {
@@ -105,7 +121,7 @@ const Speech = (() => {
   // ── Init ──────────────────────────────────────────────────────────────────
   if (isSupported()) {
     _loadVoices();
-    // Chrome loads voices async
+    // Chrome loads voices async — voiceschanged fires when list is ready
     window.speechSynthesis.addEventListener('voiceschanged', _loadVoices);
   }
 
