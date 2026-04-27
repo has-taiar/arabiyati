@@ -61,12 +61,16 @@
   <!-- Main app mount point -->
   <div id="app" role="main" aria-live="polite"></div>
 
+  <!-- API base — set to your Function App URL to enable cloud sync. Empty = offline-only. -->
+  <script>window.ARABIYATI_API_BASE = 'https://huroof-api-6813.azurewebsites.net/api';</script>
+
   <!-- Data & helpers (order matters) -->
   <script src="js/data.js"></script>
   <script src="js/profile.js"></script>
   <script src="js/badges.js"></script>
   <script src="js/router.js"></script>
   <script src="js/speech.js"></script>
+  <script src="js/sync.js"></script>
 
   <!-- Game modules -->
   <script src="js/games/flashcard.js"></script>

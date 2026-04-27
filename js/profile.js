@@ -31,6 +31,10 @@ function saveProfile(profile) {
   } catch (e) {
     console.warn('Could not save profile:', e);
   }
+  // Push to server (debounced; no-op if offline / not signed in)
+  try {
+    if (typeof Sync !== 'undefined' && Sync.schedulePush) Sync.schedulePush(profile);
+  } catch (e) {}
 }
 
 function createProfile(name, avatar) {

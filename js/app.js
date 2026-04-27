@@ -7,7 +7,7 @@ let comboBanner = null;
 let badgeToast = null;
 
 // ── BOOT ──────────────────────────────────────────────────────────────────────
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   // Inject persistent overlay elements
   comboBanner = document.createElement('div');
   comboBanner.className = 'combo-banner';
@@ -16,6 +16,14 @@ document.addEventListener('DOMContentLoaded', () => {
   badgeToast = document.createElement('div');
   badgeToast.className = 'badge-unlock-toast';
   document.body.appendChild(badgeToast);
+
+  // Cloud sync: handle magic-link callback first, then pull remote if signed in.
+  if (typeof Sync !== 'undefined') {
+    try { await Sync.handleAuthCallback(); } catch (e) {}
+    if (Sync.isSignedIn() && Sync.getProfileId()) {
+      try { await Sync.pullToLocal(); } catch (e) {}
+    }
+  }
 
   profile = loadProfile();
   if (!profile || !profile.name) {
@@ -392,6 +400,8 @@ registerScreen('profile', (app) => {
       </div>
       <div class="section-header">Badges · الشارات</div>
       <div class="badge-grid" id="badge-grid"></div>
+      <div class="section-header" style="margin-top:28px;">☁️ Cloud Sync · المزامنة</div>
+      <div id="sync-section" style="background:white;border-radius:14px;padding:14px;border:2px solid var(--teal);"></div>
       <div class="section-header" style="margin-top:28px;">Danger Zone · منطقة الخطر</div>
       <button class="btn-danger" id="reset-btn">Reset Progress · إعادة التعيين</button>
     </div>
@@ -423,7 +433,111 @@ registerScreen('profile', (app) => {
       showScreen('onboarding');
     }
   });
+
+  renderSyncSection();
 });
+
+function renderSyncSection() {
+  const el = document.getElementById('sync-section');
+  if (!el) return;
+  if (typeof Sync === 'undefined' || !Sync.isConfigured()) {
+    el.innerHTML = `<div style="color:#888;font-size:0.9rem;">Cloud sync is not configured for this site. Progress is stored only on this device.</div>`;
+    return;
+  }
+
+  if (!Sync.isSignedIn()) {
+    el.innerHTML = `
+      <div style="font-size:0.9rem;color:#555;margin-bottom:8px;">
+        Sign in (parent only) to back up progress and sync across devices.
+      </div>
+      <input type="email" id="sync-email" placeholder="parent@email.com" style="width:100%;padding:10px;border:2px solid #ddd;border-radius:10px;margin-bottom:8px;font-size:0.95rem;" />
+      <button class="btn" id="sync-link-btn" style="width:100%;">Send sign-in link · أرسل رابط تسجيل</button>
+      <div id="sync-msg" style="font-size:0.85rem;color:#00897B;margin-top:8px;"></div>
+    `;
+    document.getElementById('sync-link-btn').addEventListener('click', async () => {
+      const email = (document.getElementById('sync-email').value || '').trim();
+      const msg = document.getElementById('sync-msg');
+      if (!email) { msg.style.color = 'var(--coral)'; msg.textContent = 'Enter an email'; return; }
+      msg.style.color = 'var(--teal-dk)';
+      msg.textContent = 'Sending…';
+      try {
+        await Sync.requestMagicLink(email);
+        msg.textContent = '✓ Link sent! Check email and tap the link.';
+      } catch (e) {
+        msg.style.color = 'var(--coral)';
+        msg.textContent = 'Could not send: ' + e.message;
+      }
+    });
+    return;
+  }
+
+  // Signed in — show profile linking & sign-out
+  const email = Sync.getEmail() || '';
+  const remoteId = Sync.getProfileId();
+  const last = parseInt(localStorage.getItem('arabiyati_last_sync') || '0', 10);
+  const lastStr = last ? new Date(last).toLocaleString() : 'never';
+
+  el.innerHTML = `
+    <div style="font-size:0.85rem;color:#555;">Signed in as <b>${email}</b></div>
+    <div style="font-size:0.8rem;color:#888;margin-bottom:10px;">Last synced: ${lastStr}</div>
+    <div id="sync-profile-row" style="margin-bottom:10px;"></div>
+    <div style="display:flex;gap:8px;">
+      <button class="btn btn-secondary" id="sync-now-btn" style="flex:1;">⬆ Sync now</button>
+      <button class="btn btn-secondary" id="sync-pull-btn" style="flex:1;">⬇ Pull from cloud</button>
+    </div>
+    <button class="btn btn-secondary" id="sync-out-btn" style="width:100%;margin-top:8px;color:var(--coral);border-color:var(--coral);">Sign out · تسجيل الخروج</button>
+    <div id="sync-msg" style="font-size:0.85rem;color:#00897B;margin-top:8px;"></div>
+  `;
+
+  const msg = document.getElementById('sync-msg');
+  const setMsg = (text, ok = true) => {
+    msg.style.color = ok ? 'var(--teal-dk)' : 'var(--coral)';
+    msg.textContent = text;
+  };
+
+  // Profile linking row
+  const row = document.getElementById('sync-profile-row');
+  if (!remoteId) {
+    row.innerHTML = `
+      <div style="font-size:0.85rem;margin-bottom:6px;">This device's profile is not linked to a cloud profile yet.</div>
+      <button class="btn" id="sync-create-btn" style="width:100%;">Create cloud profile for ${profile.name}</button>
+    `;
+    document.getElementById('sync-create-btn').addEventListener('click', async () => {
+      try {
+        const id = await Sync.createRemoteProfile(profile.name, profile.avatar);
+        Sync.setProfileId(id);
+        await Sync.flush(profile);
+        setMsg('✓ Cloud profile created and synced.');
+        renderSyncSection();
+      } catch (e) {
+        setMsg('Could not create: ' + e.message, false);
+      }
+    });
+  } else {
+    row.innerHTML = `<div style="font-size:0.85rem;color:#555;">Linked profile: <code>${remoteId.slice(0, 8)}…</code></div>`;
+  }
+
+  document.getElementById('sync-now-btn').addEventListener('click', async () => {
+    setMsg('Syncing…');
+    try { await Sync.flush(profile); setMsg('✓ Synced'); renderSyncSection(); }
+    catch (e) { setMsg('Failed: ' + e.message, false); }
+  });
+  document.getElementById('sync-pull-btn').addEventListener('click', async () => {
+    if (!confirm('Replace local progress with the cloud copy?')) return;
+    setMsg('Pulling…');
+    try {
+      await Sync.pullToLocal();
+      profile = loadProfile();
+      setMsg('✓ Pulled from cloud');
+      showScreen('profile');
+    } catch (e) { setMsg('Failed: ' + e.message, false); }
+  });
+  document.getElementById('sync-out-btn').addEventListener('click', () => {
+    if (!confirm('Sign out? Local progress stays on this device.')) return;
+    Sync.signOut();
+    renderSyncSection();
+  });
+}
 
 // ── HELPERS ───────────────────────────────────────────────────────────────────
 function topBar() {

@@ -1,0 +1,9 @@
+# Local development
+local.settings.json
+.python_packages/
+__pycache__/
+*.pyc
+.venv/
+.azurefunctions/
+bin/
+obj/
