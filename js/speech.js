@@ -1,15 +1,23 @@
-// speech.js — Web Speech API wrapper
-// Robust cross-browser/iOS implementation:
-//   • Unlocks audio on first user gesture (iOS Safari requirement)
-//   • Speaks synchronously in core path (no nested setTimeout breaking gesture)
-//   • keepAlive interval prevents Chrome from silently pausing synthesis
+// speech.js — Web Speech API wrapper with diagnostic logging
+//
+// Known issues addressed:
+//   • iOS Safari requires a sync gesture call to unlock audio
+//   • Chrome silently pauses synthesis after ~15s idle (keepAlive)
+//   • Firefox / Chrome bug: cancel() right before speak() can swallow the utterance
+//   • Brave blocks speechSynthesis voices via privacy shields
+//
+// All operations log to console with [Speech] prefix.
 
 const Speech = (() => {
   const MUTE_KEY = 'arabiyati_speech_muted';
+  const LOG  = (...a) => { try { console.log('[Speech]', ...a); } catch (e) {} };
+  const WARN = (...a) => { try { console.warn('[Speech]', ...a); } catch (e) {} };
+
   let _arabicVoice = null;
   let _pendingTimeout = null;
   let _voiceRetries = 0;
   let _unlocked = false;
+  let _bannerShown = false;
 
   function isSupported() {
     return typeof window !== 'undefined' && !!window.speechSynthesis;
@@ -27,12 +35,14 @@ const Speech = (() => {
   function toggleMuted() {
     const next = !isMuted();
     setMuted(next);
+    LOG(next ? 'muted' : 'unmuted');
     return next;
   }
 
   function _loadVoices() {
     if (!isSupported()) return;
     const voices = window.speechSynthesis.getVoices();
+    LOG(`_loadVoices: ${voices.length} voices available`);
     _arabicVoice =
       voices.find(v => v.lang === 'ar-IQ') ||
       voices.find(v => v.lang === 'ar-SA') ||
@@ -40,33 +50,60 @@ const Speech = (() => {
       voices.find(v => v.lang === 'ar-EG') ||
       voices.find(v => v.lang && v.lang.startsWith('ar')) ||
       null;
-    if (!_arabicVoice && voices.length === 0 && _voiceRetries < 10) {
+    if (_arabicVoice) {
+      LOG('Arabic voice selected:', _arabicVoice.name, _arabicVoice.lang);
+    } else if (voices.length > 0) {
+      LOG('No Arabic voice found among', voices.length, 'voices. Will use English fallback.');
+    }
+    if (!_arabicVoice && voices.length === 0 && _voiceRetries < 15) {
       _voiceRetries++;
-      setTimeout(_loadVoices, 300);
+      setTimeout(_loadVoices, 400);
+    } else if (voices.length === 0 && _voiceRetries >= 15) {
+      WARN('No voices loaded after 15 retries — likely Brave/Firefox privacy block');
+      _showBrowserBanner();
     }
   }
 
-  // iOS Safari blocks speechSynthesis until a synchronous user-gesture call is made.
+  function _showBrowserBanner() {
+    if (_bannerShown || typeof document === 'undefined') return;
+    _bannerShown = true;
+    const isBrave = !!(navigator.brave && typeof navigator.brave.isBrave === 'function');
+    const banner = document.createElement('div');
+    banner.style.cssText = 'position:fixed;top:0;left:0;right:0;background:#FFCDD2;color:#B71C1C;padding:10px 14px;font-size:0.85rem;text-align:center;z-index:9999;box-shadow:0 2px 8px rgba(0,0,0,0.15);font-family:sans-serif;';
+    banner.innerHTML = (isBrave
+      ? '⚠️ <b>Brave is blocking audio.</b> Click the Brave shield icon next to the URL and turn shields <b>OFF</b> for this site, then reload.'
+      : '⚠️ <b>No text-to-speech voices available.</b> Try Chrome, Edge, or Safari, or install OS speech voices.')
+      + ' <button style="margin-left:10px;padding:2px 8px;border:none;background:#B71C1C;color:white;border-radius:4px;cursor:pointer;" onclick="this.parentNode.remove()">✕</button>';
+    document.body.appendChild(banner);
+  }
+
   function _unlock() {
     if (_unlocked || !isSupported()) return;
     _unlocked = true;
+    LOG('Unlocking audio engine on first user gesture');
     try {
-      const silent = new SpeechSynthesisUtterance('');
+      const silent = new SpeechSynthesisUtterance(' ');
       silent.volume = 0;
       window.speechSynthesis.speak(silent);
-    } catch (e) {}
-    // Chrome keepAlive: prevents silent pause after ~15s idle
+    } catch (e) { WARN('Unlock utterance failed:', e); }
     setInterval(() => {
-      if (window.speechSynthesis && !window.speechSynthesis.speaking) {
+      if (window.speechSynthesis && !window.speechSynthesis.speaking && !window.speechSynthesis.pending) {
         try { window.speechSynthesis.resume(); } catch (e) {}
       }
     }, 10000);
   }
 
   function _doSpeak(text, lang) {
-    if (!isSupported() || isMuted()) return;
-    window.speechSynthesis.cancel();
-    try { window.speechSynthesis.resume(); } catch (e) {}
+    if (!isSupported() || isMuted()) {
+      LOG('_doSpeak skipped — supported:', isSupported(), 'muted:', isMuted());
+      return;
+    }
+    LOG(`Speaking: "${text}" [${lang}]`);
+
+    const synth = window.speechSynthesis;
+    const wasBusy = synth.speaking || synth.pending;
+    if (wasBusy) synth.cancel();
+    try { synth.resume(); } catch (e) {}
 
     const utt = new SpeechSynthesisUtterance(text);
     if (lang === 'ar' && _arabicVoice) {
@@ -77,24 +114,35 @@ const Speech = (() => {
     }
     utt.rate = 0.82;
     utt.pitch = 1.05;
-    utt.onerror = () => {};
-    window.speechSynthesis.speak(utt);
+    utt.onstart = () => LOG('utterance started');
+    utt.onend   = () => LOG('utterance ended');
+    utt.onerror = (e) => WARN('utterance error:', e.error || e);
+
+    const speakNow = () => synth.speak(utt);
+    if (wasBusy) setTimeout(speakNow, 60);
+    else speakNow();
   }
 
   function speakWord(word) {
-    if (isMuted() || !isSupported() || !word) return;
+    if (!word) return;
+    if (isMuted()) { LOG('speakWord blocked — muted'); return; }
+    if (!isSupported()) { LOG('speakWord blocked — not supported'); return; }
     _unlock();
     if (!_arabicVoice) _loadVoices();
     if (_arabicVoice) {
       _doSpeak(word.arabic, 'ar');
     } else {
+      LOG('Falling back to English pronunciation:', word.pronunciation);
       _doSpeak(word.pronunciation, 'en');
     }
   }
 
   function cancel() {
     if (_pendingTimeout) { clearTimeout(_pendingTimeout); _pendingTimeout = null; }
-    if (isSupported()) window.speechSynthesis.cancel();
+    if (isSupported()) {
+      const synth = window.speechSynthesis;
+      if (synth.speaking || synth.pending) synth.cancel();
+    }
   }
 
   function scheduleSpeak(word, opts) {
@@ -112,6 +160,9 @@ const Speech = (() => {
       promptEl.textContent = '🗣️ Say it! · قولها!';
       promptEl.className = 'say-it-prompt';
       promptEl.style.display = '';
+      promptEl.style.cursor = 'pointer';
+      promptEl.title = 'Tap to hear · اضغط لتسمع';
+      promptEl.onclick = (e) => { e.stopPropagation(); speakWord(word); };
     }
 
     _pendingTimeout = setTimeout(() => {
@@ -128,7 +179,7 @@ const Speech = (() => {
   }
 
   function diagnose() {
-    if (!isSupported()) return { supported: false, voices: 0, arabic: null, browser: navigator.userAgent };
+    if (!isSupported()) return { supported: false, voiceCount: 0, arabicVoices: [], selectedVoice: 'N/A' };
     const voices = window.speechSynthesis.getVoices();
     return {
       supported: true,
@@ -137,15 +188,19 @@ const Speech = (() => {
       voiceCount: voices.length,
       arabicVoices: voices.filter(v => v.lang && v.lang.startsWith('ar')).map(v => `${v.name} (${v.lang})`),
       selectedVoice: _arabicVoice ? `${_arabicVoice.name} (${_arabicVoice.lang})` : 'NONE — using English fallback',
+      userAgent: navigator.userAgent,
     };
   }
 
   if (isSupported()) {
+    LOG('Web Speech API supported. Initialising...');
     _loadVoices();
     window.speechSynthesis.addEventListener('voiceschanged', _loadVoices);
     ['click', 'touchstart', 'keydown'].forEach(e =>
       document.addEventListener(e, _unlock, { once: true, passive: true })
     );
+  } else {
+    WARN('Web Speech API NOT supported in this browser');
   }
 
   return { isSupported, isMuted, setMuted, toggleMuted, speakWord, cancel, scheduleSpeak, diagnose };
