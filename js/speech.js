@@ -42,9 +42,12 @@ const Speech = (() => {
 
   function speakWord(word) {
     if (!word || isMuted()) return;
+    // Always cancel any pending auto-speak timer & in-flight audio first
+    if (_pendingTimeout) { clearTimeout(_pendingTimeout); _pendingTimeout = null; }
     const a = _ensureAudio();
     try { a.pause(); a.currentTime = 0; } catch (e) {}
     a.src = AUDIO_BASE + word.id + '.mp3';
+    a.load();   // abort any in-flight previous load
     LOG('speakWord', word.arabic, '→', a.src);
     const p = a.play();
     if (p && typeof p.catch === 'function') {
@@ -117,14 +120,13 @@ const Speech = (() => {
   async function recordAndPlayback(opts) {
     opts = opts || {};
     const onState = opts.onState || (() => {});
-    const recordMs = opts.recordMs || 2200;
-    const beforeWord = opts.beforeWord || null;   // word object to play first
+    const recordMs = opts.recordMs || 2500;
 
     // Privacy gate — show consent on first use
     if (!micConsented()) {
       const ok = confirm(
         "🎙️ Listen-to-yourself · اسمع نفسك\n\n" +
-        "We'll record about 2 seconds from the mic so the kid can hear themselves say the word.\n\n" +
+        "We'll record about 2-3 seconds from the mic so the kid can hear themselves say the word.\n\n" +
         "🔒 PRIVATE BY DESIGN:\n" +
         "  • Recording stays in this browser tab only\n" +
         "  • Nothing is uploaded, saved, or shared\n" +
@@ -138,13 +140,7 @@ const Speech = (() => {
     try {
       cancel();
 
-      // 1. Optionally play the canonical Arabic first
-      if (beforeWord) {
-        speakWord(beforeWord);
-        await _wait(_audioEl ? Math.max(800, (_audioEl.duration || 1) * 1000) : 1200);
-      }
-
-      // 2. Record
+      // Record
       onState({ state: 'recording' });
       const stream = await _ensureStream();
       const chunks = [];
@@ -157,7 +153,7 @@ const Speech = (() => {
       if (_recorder.state === 'recording') _recorder.stop();
       await stopped;
 
-      // 3. Playback
+      // Playback
       const mimeType = (chunks[0] && chunks[0].type) || 'audio/webm';
       const blob = new Blob(chunks, { type: mimeType });
       if (_recBlobUrl) URL.revokeObjectURL(_recBlobUrl);
@@ -167,16 +163,10 @@ const Speech = (() => {
       await playback.play();
       await new Promise(res => { playback.onended = res; playback.onerror = res; });
 
-      // 4. Discard everything
+      // Discard everything
       URL.revokeObjectURL(_recBlobUrl);
       _recBlobUrl = null;
       onState({ state: 'done' });
-
-      // 5. Replay canonical so the kid hears the difference
-      if (beforeWord) {
-        await _wait(300);
-        speakWord(beforeWord);
-      }
     } catch (e) {
       WARN('recordAndPlayback failed:', e);
       onState({ state: 'error', error: e.message || String(e) });

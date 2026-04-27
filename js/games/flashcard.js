@@ -61,7 +61,6 @@ function mountFlashcard(container, { words, onComplete }) {
         e.stopPropagation();
         const original = micBtn.textContent;
         Speech.recordAndPlayback({
-          beforeWord: w,
           onState: ({ state }) => {
             if (state === 'recording') { micBtn.textContent = '🔴'; micBtn.disabled = true; }
             else if (state === 'playing') { micBtn.textContent = '👂'; }
