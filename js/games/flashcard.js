@@ -17,6 +17,7 @@ function mountFlashcard(container, { words, onComplete }) {
             <div class="say-it-row">
               <div class="say-it-prompt" id="fc-say-it"></div>
               <button class="speak-btn" id="fc-speak" title="Hear it · اسمع">🔊</button>
+              <button class="speak-btn" id="fc-mic" title="Listen to yourself · اسمع نفسك" style="border-color:var(--coral);color:var(--coral);">🎤</button>
             </div>
             <span class="flashcard-tap-hint">Tap to flip · اضغط للقلب</span>
           </div>
@@ -42,17 +43,36 @@ function mountFlashcard(container, { words, onComplete }) {
     // Speech: "Say it" prompt → auto-speak after delay
     Speech.scheduleSpeak(w, { promptEl: document.getElementById('fc-say-it') });
     const speakBtn = document.getElementById('fc-speak');
+    const micBtn = document.getElementById('fc-mic');
     const stopFlip = (e) => { e.stopPropagation(); e.preventDefault(); };
-    speakBtn.addEventListener('pointerdown', stopFlip);
-    speakBtn.addEventListener('mousedown', stopFlip);
-    speakBtn.addEventListener('touchstart', stopFlip, { passive: false });
+    [speakBtn, micBtn].forEach(b => {
+      b.addEventListener('pointerdown', stopFlip);
+      b.addEventListener('mousedown', stopFlip);
+      b.addEventListener('touchstart', stopFlip, { passive: false });
+    });
     speakBtn.addEventListener('click', (e) => {
       e.stopPropagation();
       Speech.speakWord(w);
     });
+    if (!Speech.micSupported()) {
+      micBtn.style.display = 'none';
+    } else {
+      micBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const original = micBtn.textContent;
+        Speech.recordAndPlayback({
+          beforeWord: w,
+          onState: ({ state }) => {
+            if (state === 'recording') { micBtn.textContent = '🔴'; micBtn.disabled = true; }
+            else if (state === 'playing') { micBtn.textContent = '👂'; }
+            else { micBtn.textContent = original; micBtn.disabled = false; }
+          }
+        });
+      });
+    }
 
     document.getElementById('fc-scene').addEventListener('click', (e) => {
-      // Don't flip when the speak button (or any child of it) is tapped
+      // Don't flip when any speech-related control is tapped
       if (e.target.closest('.speak-btn, .speak-btn-sm, .say-it-prompt')) return;
       flipped = !flipped;
       document.getElementById('fc-scene').classList.toggle('flipped', flipped);
