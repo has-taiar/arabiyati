@@ -1,4 +1,4 @@
-"""Arabiyati API — Azure Functions Python v2.
+"""Huroof API — Azure Functions Python v2.
 
 Endpoints:
   POST /api/auth/magiclink  body {email}            → emails one-time link
@@ -112,11 +112,11 @@ def _send_magic_link(email: str, link: str) -> None:
         "senderAddress": ACS_SENDER,
         "recipients": {"to": [{"address": email}]},
         "content": {
-            "subject": "Arabiyati · Your sign-in link",
-            "plainText": f"Tap this link to sign in to Arabiyati:\n\n{link}\n\nThis link expires in 5 minutes. If you didn't request it, ignore this email.",
+            "subject": "Huroof · Your sign-in link",
+            "plainText": f"Tap this link to sign in to Huroof:\n\n{link}\n\nThis link expires in 5 minutes. If you didn't request it, ignore this email.",
             "html": f"""
               <div style="font-family:sans-serif;max-width:520px;margin:0 auto;padding:24px;">
-                <h2 style="color:#00897B;">Arabiyati · عربيتي</h2>
+                <h2 style="color:#00897B;">Huroof · حروف</h2>
                 <p>Tap the button below to sign in. This link expires in 5 minutes.</p>
                 <p style="text-align:center;margin:30px 0;">
                   <a href="{link}" style="display:inline-block;background:#00BFA5;color:white;padding:14px 28px;border-radius:10px;text-decoration:none;font-weight:bold;">Sign in</a>

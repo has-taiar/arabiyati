@@ -13,8 +13,9 @@ const Sync = (() => {
   const LOG  = (...a) => { try { console.log('[Sync]', ...a); } catch (e) {} };
   const WARN = (...a) => { try { console.warn('[Sync]', ...a); } catch (e) {} };
 
-  // API base — set window.ARABIYATI_API_BASE in index.html. Empty = offline-only.
-  const API = (typeof window !== 'undefined' && window.ARABIYATI_API_BASE) || '';
+  // API base — set window.HUROOF_API_BASE in index.html. Empty = offline-only.
+  // (Falls back to legacy window.ARABIYATI_API_BASE for backwards compat.)
+  const API = (typeof window !== 'undefined' && (window.HUROOF_API_BASE || window.ARABIYATI_API_BASE)) || '';
 
   const JWT_KEY        = 'arabiyati_jwt';
   const JWT_EMAIL_KEY  = 'arabiyati_jwt_email';

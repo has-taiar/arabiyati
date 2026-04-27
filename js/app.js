@@ -85,8 +85,8 @@ async function bootRoute() {
 registerScreen('signin', (app) => {
   app.innerHTML = `
     <div class="onboarding-screen">
-      <div class="logo anim-bounce-in">عربيتي</div>
-      <div class="logo-sub">Arabiyati · My Arabic</div>
+      <div class="logo anim-bounce-in">حروف</div>
+      <div class="logo-sub">Huroof · Letters</div>
       <p style="color:#555;max-width:340px;margin:8px auto 18px;font-size:0.95rem;line-height:1.45;">
         Welcome! Enter your email to get a secure sign-in link.<br>
         <span style="color:#777;font-size:0.85rem;">No password. Works across all your devices.</span>
@@ -146,7 +146,7 @@ registerScreen('signin', (app) => {
 registerScreen('profilePicker', (app, { profiles }) => {
   app.innerHTML = `
     <div class="onboarding-screen">
-      <div class="logo anim-bounce-in" style="font-size:2.6rem;">عربيتي</div>
+      <div class="logo anim-bounce-in" style="font-size:2.6rem;">حروف</div>
       <div class="logo-sub" style="font-size:1.05rem;">Who's playing? · من يلعب؟</div>
       <div class="profile-picker-grid" id="picker-grid"></div>
       <button class="btn btn-secondary" id="add-child-btn" style="max-width:300px;margin-top:16px;">
@@ -190,8 +190,8 @@ registerScreen('onboarding', (app) => {
 
   app.innerHTML = `
     <div class="onboarding-screen">
-      <div class="logo anim-bounce-in">عربيتي</div>
-      <div class="logo-sub">Arabiyati · My Arabic</div>
+      <div class="logo anim-bounce-in">حروف</div>
+      <div class="logo-sub">Huroof · Letters</div>
       <p style="color:#555;margin-bottom:16px;font-size:0.95rem;">${heading}</p>
       <div class="avatar-picker" id="avatar-picker"></div>
       <p style="color:#555;margin-bottom:8px;font-size:0.95rem;">${namePrompt}</p>
