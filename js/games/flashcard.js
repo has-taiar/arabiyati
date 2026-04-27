@@ -41,12 +41,19 @@ function mountFlashcard(container, { words, onComplete }) {
 
     // Speech: "Say it" prompt → auto-speak after delay
     Speech.scheduleSpeak(w, { promptEl: document.getElementById('fc-say-it') });
-    document.getElementById('fc-speak').addEventListener('click', (e) => {
+    const speakBtn = document.getElementById('fc-speak');
+    const stopFlip = (e) => { e.stopPropagation(); e.preventDefault(); };
+    speakBtn.addEventListener('pointerdown', stopFlip);
+    speakBtn.addEventListener('mousedown', stopFlip);
+    speakBtn.addEventListener('touchstart', stopFlip, { passive: false });
+    speakBtn.addEventListener('click', (e) => {
       e.stopPropagation();
       Speech.speakWord(w);
     });
 
-    document.getElementById('fc-scene').addEventListener('click', () => {
+    document.getElementById('fc-scene').addEventListener('click', (e) => {
+      // Don't flip when the speak button (or any child of it) is tapped
+      if (e.target.closest('.speak-btn, .speak-btn-sm, .say-it-prompt')) return;
       flipped = !flipped;
       document.getElementById('fc-scene').classList.toggle('flipped', flipped);
       document.getElementById('report-row').style.display = flipped ? 'flex' : 'none';

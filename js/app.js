@@ -443,14 +443,58 @@ function topBar() {
 
 function wireTopBar() {
   const soundBtn = document.getElementById('nav-sound');
-  if (soundBtn) soundBtn.addEventListener('click', () => {
-    const nowMuted = Speech.toggleMuted();
-    soundBtn.textContent = nowMuted ? '🔇' : '🔊';
-    soundBtn.classList.toggle('muted', nowMuted);
-    soundBtn.title = nowMuted ? 'Unmute · تشغيل الصوت' : 'Mute · كتم الصوت';
-  });
+  if (soundBtn) {
+    soundBtn.addEventListener('click', () => {
+      const nowMuted = Speech.toggleMuted();
+      soundBtn.textContent = nowMuted ? '🔇' : '🔊';
+      soundBtn.classList.toggle('muted', nowMuted);
+      soundBtn.title = nowMuted ? 'Unmute · تشغيل الصوت' : 'Mute · كتم الصوت';
+    });
+    // Long-press / right-click → show audio diagnostic (helps debug Brave etc.)
+    soundBtn.addEventListener('contextmenu', (e) => { e.preventDefault(); showSpeechDiagnostic(); });
+    let pressTimer = null;
+    soundBtn.addEventListener('pointerdown', () => {
+      pressTimer = setTimeout(showSpeechDiagnostic, 800);
+    });
+    ['pointerup', 'pointerleave', 'pointercancel'].forEach(ev =>
+      soundBtn.addEventListener(ev, () => { if (pressTimer) clearTimeout(pressTimer); })
+    );
+  }
   const profBtn = document.getElementById('nav-profile');
   if (profBtn) profBtn.addEventListener('click', () => showScreen('profile'));
+}
+
+function showSpeechDiagnostic() {
+  const d = Speech.diagnose();
+  let msg = '🔊 Audio diagnostic\n\n';
+  if (!d.supported) {
+    msg += '❌ Web Speech API NOT supported in this browser.\n\n';
+    msg += 'Try Chrome, Safari, Edge, or Firefox.\n\n';
+    msg += 'Note: Brave often blocks Web Speech API by default.\n';
+    msg += 'In Brave, go to brave://settings/privacy and disable\n';
+    msg += '"Use Google services for push messaging" OR add this site to allowed sites.';
+  } else {
+    msg += `Supported: ✅\n`;
+    msg += `Audio unlocked: ${d.unlocked ? '✅' : '❌ (tap anywhere first)'}\n`;
+    msg += `Muted: ${d.muted ? '🔇 yes' : '🔊 no'}\n`;
+    msg += `Total voices: ${d.voiceCount}\n`;
+    msg += `Arabic voices found: ${d.arabicVoices.length}\n`;
+    if (d.arabicVoices.length) msg += '  • ' + d.arabicVoices.join('\n  • ') + '\n';
+    msg += `\nSelected voice: ${d.selectedVoice}\n`;
+    if (d.voiceCount === 0) {
+      msg += '\n⚠️ No voices loaded. This usually means:\n';
+      msg += '  • Brave/Firefox privacy blocking\n';
+      msg += '  • OS has no TTS voices installed\n';
+    } else if (d.arabicVoices.length === 0) {
+      msg += '\n⚠️ No Arabic voice on this device.\n';
+      msg += 'Will speak the English phonetic guide instead.\n';
+      msg += 'To install Arabic TTS:\n';
+      msg += '  • Windows: Settings → Time & Language → Speech → Add voices\n';
+      msg += '  • macOS: System Settings → Accessibility → Spoken Content\n';
+      msg += '  • Android: Settings → Languages → Text-to-speech\n';
+    }
+  }
+  alert(msg);
 }
 
 function showComboBanner(n) {

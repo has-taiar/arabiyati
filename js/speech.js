@@ -127,6 +127,19 @@ const Speech = (() => {
     }, delay);
   }
 
+  function diagnose() {
+    if (!isSupported()) return { supported: false, voices: 0, arabic: null, browser: navigator.userAgent };
+    const voices = window.speechSynthesis.getVoices();
+    return {
+      supported: true,
+      unlocked: _unlocked,
+      muted: isMuted(),
+      voiceCount: voices.length,
+      arabicVoices: voices.filter(v => v.lang && v.lang.startsWith('ar')).map(v => `${v.name} (${v.lang})`),
+      selectedVoice: _arabicVoice ? `${_arabicVoice.name} (${_arabicVoice.lang})` : 'NONE — using English fallback',
+    };
+  }
+
   if (isSupported()) {
     _loadVoices();
     window.speechSynthesis.addEventListener('voiceschanged', _loadVoices);
@@ -135,5 +148,5 @@ const Speech = (() => {
     );
   }
 
-  return { isSupported, isMuted, setMuted, toggleMuted, speakWord, cancel, scheduleSpeak };
+  return { isSupported, isMuted, setMuted, toggleMuted, speakWord, cancel, scheduleSpeak, diagnose };
 })();
