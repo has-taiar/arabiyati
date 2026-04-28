@@ -2,6 +2,7 @@
 
 const AVATARS = ['🧑‍🚀','🤖','🐱','🐲','🦊','🐸','🦄','🐼'];
 const OFFLINE_OPT_KEY = 'arabiyati_offline_opt';
+const MAX_QUESTIONS_PER_ROUND = 12;
 
 let profile = null;
 let comboBanner = null;
@@ -97,6 +98,22 @@ registerScreen('signin', (app) => {
         Send sign-in link · أرسل الرابط
       </button>
       <div id="signin-msg" style="font-size:0.9rem;color:var(--teal-dk);margin-top:12px;min-height:1.2em;max-width:320px;"></div>
+
+      <div id="code-row" style="display:none;margin-top:14px;max-width:320px;width:100%;">
+        <p style="color:#555;font-size:0.88rem;margin-bottom:6px;">
+          Don't have email on this device? Enter the 6-character code from the email:<br>
+          <span style="color:#888;font-size:0.8rem;">ما عندك إيميل على هذا الجهاز؟ ادخل الكود</span>
+        </p>
+        <input type="text" class="text-input" id="signin-code"
+          placeholder="ABC123"
+          maxlength="6" autocomplete="one-time-code" inputmode="text"
+          style="text-transform:uppercase;letter-spacing:6px;font-family:monospace;font-size:1.2rem;text-align:center;" />
+        <button class="btn btn-primary" id="code-btn" style="margin-top:8px;">
+          Sign in with code · ادخل بالكود
+        </button>
+        <div id="code-msg" style="font-size:0.9rem;color:var(--teal-dk);margin-top:8px;min-height:1.2em;"></div>
+      </div>
+
       <button class="link-btn" id="offline-btn" style="margin-top:24px;">
         Or continue offline (no sync) · استخدم بدون اتصال
       </button>
@@ -109,6 +126,11 @@ registerScreen('signin', (app) => {
   const emailInput = document.getElementById('signin-email');
   const sendBtn = document.getElementById('signin-btn');
   const msg = document.getElementById('signin-msg');
+  const codeRow = document.getElementById('code-row');
+  const codeInput = document.getElementById('signin-code');
+  const codeBtn = document.getElementById('code-btn');
+  const codeMsg = document.getElementById('code-msg');
+  let lastEmail = '';
 
   async function send() {
     const email = (emailInput.value || '').trim();
@@ -123,9 +145,12 @@ registerScreen('signin', (app) => {
     msg.textContent = 'Sending…';
     try {
       await Sync.requestMagicLink(email);
-      msg.innerHTML = `✓ Link sent to <b>${email}</b>.<br>Open the email on this device and tap the link.`;
+      lastEmail = email;
+      msg.innerHTML = `✓ Sent to <b>${email}</b>. Open the link in the email, OR enter the 6-character code below.`;
       sendBtn.textContent = 'Resend';
       sendBtn.disabled = false;
+      codeRow.style.display = 'block';
+      codeInput.focus();
     } catch (e) {
       msg.style.color = 'var(--coral)';
       msg.textContent = 'Could not send: ' + e.message;
@@ -133,8 +158,43 @@ registerScreen('signin', (app) => {
     }
   }
 
+  async function submitCode() {
+    const code = (codeInput.value || '').trim().toUpperCase();
+    if (!/^[A-Z0-9]{6}$/.test(code)) {
+      codeMsg.style.color = 'var(--coral)';
+      codeMsg.textContent = 'Enter the 6-character code from the email';
+      codeInput.focus();
+      return;
+    }
+    if (!lastEmail) {
+      codeMsg.style.color = 'var(--coral)';
+      codeMsg.textContent = 'Please request a code first';
+      return;
+    }
+    codeBtn.disabled = true;
+    codeMsg.style.color = 'var(--teal-dk)';
+    codeMsg.textContent = 'Verifying…';
+    try {
+      await Sync.verifyCode(lastEmail, code);
+      codeMsg.textContent = '✓ Signed in!';
+      // Re-route boot to pick up signed-in state
+      await bootRoute();
+    } catch (e) {
+      codeMsg.style.color = 'var(--coral)';
+      codeMsg.textContent = e.message === 'Invalid or expired code'
+        ? 'That code is wrong or expired. Resend and try again.'
+        : 'Could not verify: ' + e.message;
+      codeBtn.disabled = false;
+    }
+  }
+
   sendBtn.addEventListener('click', send);
   emailInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') send(); });
+  codeBtn.addEventListener('click', submitCode);
+  codeInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') submitCode(); });
+  codeInput.addEventListener('input', () => {
+    codeInput.value = (codeInput.value || '').toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 6);
+  });
 
   document.getElementById('offline-btn').addEventListener('click', () => {
     localStorage.setItem(OFFLINE_OPT_KEY, '1');
@@ -252,13 +312,28 @@ registerScreen('home', (app) => {
   app.innerHTML = `
     ${topBar()}
     <div class="home-screen">
-      <h2 class="home-section-title">⚡ Quick Play · لعب سريع</h2>
-      <p class="home-section-sub">${WORDS.length} words from all categories — tap a game to start</p>
-      <div class="game-mode-grid" id="qp-grid"></div>
-
-      <h2 class="home-section-title" style="margin-top:24px;">📚 Categories · الفئات</h2>
-      <p class="home-section-sub">Pick a topic to focus on</p>
-      <div class="category-grid" id="cat-grid"></div>
+      <div class="home-halves">
+        <section class="home-half home-half-quickplay">
+          <h2 class="home-section-title">⚡ Quick Play · لعب سريع</h2>
+          <p class="home-section-sub">${WORDS.length} words from all categories</p>
+          <div class="game-mode-grid" id="qp-grid"></div>
+        </section>
+        <section class="home-half home-half-categories">
+          <h2 class="home-section-title">📚 Categories · الفئات</h2>
+          <p class="home-section-sub">Pick a topic to focus on</p>
+          <div class="category-grid" id="cat-grid"></div>
+        </section>
+      </div>
+      <section class="home-extra">
+        <h2 class="home-section-title" style="margin-top:18px;">🗺️ Learning Map · خارطة التعلم</h2>
+        <p class="home-section-sub">Follow the path and earn certificates</p>
+        <div id="learning-map-mini"></div>
+      </section>
+      <section class="home-extra">
+        <h2 class="home-section-title" style="margin-top:18px;">📖 Simple Books · كتب سهلة</h2>
+        <p class="home-section-sub">Look at pictures and read short phrases</p>
+        <div class="books-grid" id="books-grid"></div>
+      </section>
     </div>
   `;
 
@@ -309,6 +384,14 @@ registerScreen('home', (app) => {
     });
     grid.appendChild(card);
   });
+
+  // Learning map mini-preview
+  const mapMini = document.getElementById('learning-map-mini');
+  if (mapMini) renderLearningMapMini(mapMini);
+
+  // Books grid
+  const booksGrid = document.getElementById('books-grid');
+  if (booksGrid) renderBooksGrid(booksGrid);
 });
 
 // ── SCREEN: QUICK PLAY PICKER ─────────────────────────────────────────────────
@@ -481,19 +564,18 @@ registerScreen('game', (app, { words, mode, categoryKey, label }) => {
     showScreen('results', { results, starsEarned, categoryKey, label, mode, words, modeUnlocked: unlocked });
   }
 
-  const gameWords = words; // all available
+  // Cap each round at MAX_QUESTIONS_PER_ROUND so kids get a results screen
+  // and can choose another game/category instead of the round dragging on.
+  const gameWords = words.slice(0, MAX_QUESTIONS_PER_ROUND);
   if (effectiveMode === 'flashcard') {
     mountFlashcard(mount, { words: gameWords, onComplete });
   } else if (effectiveMode === 'multipleChoice') {
-    let done = 0;
     mountMultipleChoice(mount, {
       words: gameWords,
       onStar,
       onCombo,
       onComplete: (r) => { onComplete(r); }
     });
-    // progress tracking via mutation — we patch onStar
-    const origOnStar = onStar;
   } else if (effectiveMode === 'connectColumns') {
     mountConnectColumns(mount, { words: gameWords, onStar, onCombo, onComplete });
   } else if (effectiveMode === 'dragDrop') {
@@ -505,6 +587,241 @@ function pickChallengeMode() {
   const modes = ['multipleChoice', 'connectColumns', 'dragDrop'];
   return modes[Math.floor(Math.random() * modes.length)];
 }
+
+// ── LEARNING MAP ──────────────────────────────────────────────────────────────
+// A simple linear path of "stops". Each stop = a category mastery checkpoint.
+// Stop is "complete" once the kid has at least N correct answers in that
+// category (counting progress already tracked in profile.categoryProgress).
+const LEARNING_MAP_STOPS = [
+  { key: 'NUMBERS',         emoji: '🔢', en: 'Numbers',     ar: 'الأرقام',      target: 10 },
+  { key: 'COLOURS',         emoji: '🎨', en: 'Colours',     ar: 'الألوان',      target: 7  },
+  { key: 'GREETINGS',       emoji: '👋', en: 'Greetings',   ar: 'التحيات',      target: 8  },
+  { key: 'FAMILY',          emoji: '👨‍👩‍👧', en: 'Family',  ar: 'العائلة',     target: 8  },
+  { key: 'FOOD',            emoji: '🍎', en: 'Food',        ar: 'الأكل',        target: 12 },
+  { key: 'BODY',            emoji: '🫶', en: 'Body',        ar: 'الجسم',        target: 8  },
+  { key: 'ANIMALS',         emoji: '🐾', en: 'Animals',     ar: 'الحيوانات',    target: 8  },
+  { key: 'ACTIONS',         emoji: '⚽', en: 'Actions',     ar: 'الأفعال',      target: 6  },
+  { key: 'MY ACTIONS',      emoji: '🙋', en: 'My Actions',  ar: 'أفعالي',       target: 10 },
+  { key: 'PLACES',          emoji: '🏙️', en: 'Places',     ar: 'الأماكن',      target: 8  },
+  { key: 'WEATHER',         emoji: '🌤️', en: 'Weather',    ar: 'الطقس',        target: 6  },
+  { key: 'HOME & CLOTHES',  emoji: '🏡', en: 'Home',        ar: 'البيت',        target: 8  },
+];
+
+function getMapStopState(idx) {
+  const stop = LEARNING_MAP_STOPS[idx];
+  const cp = (profile && profile.categoryProgress && profile.categoryProgress[stop.key]) || { correct: 0 };
+  const correct = cp.correct || 0;
+  const done = correct >= stop.target;
+  // Unlocked if it's the first stop or the previous one is done
+  let unlocked = idx === 0;
+  if (idx > 0) {
+    const prevStop = LEARNING_MAP_STOPS[idx - 1];
+    const prevCp = (profile && profile.categoryProgress && profile.categoryProgress[prevStop.key]) || { correct: 0 };
+    unlocked = (prevCp.correct || 0) >= prevStop.target;
+  }
+  return { stop, correct, done, unlocked };
+}
+
+function renderLearningMapMini(container) {
+  // Show next 4-5 stops with progress; tap to open full map screen.
+  let firstUnfinished = LEARNING_MAP_STOPS.findIndex((_, i) => !getMapStopState(i).done);
+  if (firstUnfinished === -1) firstUnfinished = LEARNING_MAP_STOPS.length - 1;
+  const start = Math.max(0, firstUnfinished - 1);
+  const slice = LEARNING_MAP_STOPS.slice(start, start + 5);
+
+  const html = `
+    <button class="map-mini" id="map-open">
+      <div class="map-mini-track">
+        ${slice.map((s, i) => {
+          const realIdx = start + i;
+          const st = getMapStopState(realIdx);
+          const cls = st.done ? 'done' : (st.unlocked ? 'current' : 'locked');
+          return `<span class="map-stop map-stop-${cls}" title="${s.en}">
+                    <span class="map-stop-emoji">${st.done ? '⭐' : (st.unlocked ? s.emoji : '🔒')}</span>
+                  </span>`;
+        }).join('<span class="map-link"></span>')}
+      </div>
+      <div class="map-mini-label">Tap to open the map →</div>
+    </button>
+  `;
+  container.innerHTML = html;
+  document.getElementById('map-open').addEventListener('click', () => showScreen('learningMap'));
+}
+
+registerScreen('learningMap', (app) => {
+  const completedCount = LEARNING_MAP_STOPS.filter((_, i) => getMapStopState(i).done).length;
+  const totalCount = LEARNING_MAP_STOPS.length;
+  const certificateEarned = completedCount === totalCount;
+
+  app.innerHTML = `
+    ${topBar()}
+    <div class="map-screen">
+      <button class="btn btn-secondary" id="back-home" style="margin-bottom:14px;">← Back · رجوع</button>
+      <h2>🗺️ Learning Map · خارطة التعلم</h2>
+      <p class="subtitle">${completedCount} / ${totalCount} stops complete</p>
+      <div class="map-progress-bar"><div class="map-progress-fill" style="width:${Math.round((completedCount / totalCount) * 100)}%"></div></div>
+      <div class="map-list" id="map-list"></div>
+      ${certificateEarned ? `<button class="btn btn-primary btn-full" id="cert-btn" style="margin-top:18px;">🏆 View Certificate · شهادة</button>` : ''}
+    </div>
+  `;
+  wireTopBar();
+  document.getElementById('back-home').addEventListener('click', () => showScreen('home'));
+
+  const list = document.getElementById('map-list');
+  LEARNING_MAP_STOPS.forEach((stop, i) => {
+    const st = getMapStopState(i);
+    const cls = st.done ? 'done' : (st.unlocked ? 'current' : 'locked');
+    const item = document.createElement('button');
+    item.className = `map-item map-item-${cls}`;
+    item.disabled = !st.unlocked;
+    const pct = Math.min(100, Math.round((st.correct / stop.target) * 100));
+    item.innerHTML = `
+      <span class="map-item-num">${st.done ? '⭐' : (i + 1)}</span>
+      <span class="map-item-emoji">${stop.emoji}</span>
+      <span class="map-item-text">
+        <span class="map-item-en">${stop.en}</span>
+        <span class="map-item-ar arabic">${stop.ar}</span>
+        <span class="map-item-progress">${st.correct} / ${stop.target} ${st.done ? '✓' : ''}</span>
+      </span>
+      <span class="map-item-bar"><span class="map-item-bar-fill" style="width:${pct}%"></span></span>
+    `;
+    item.addEventListener('click', () => {
+      if (!st.unlocked) return;
+      // Check if section completion
+      if (st.done && (i + 1) % 4 === 0) {
+        // Section certificate (every 4 stops)
+        showCertificate(`Section ${Math.ceil((i + 1) / 4)} · ${stop.en}`);
+        return;
+      }
+      const meta = CATEGORY_META[stop.key] || { en: stop.en, ar: stop.ar, emoji: stop.emoji };
+      showScreen('modePicker', {
+        words: getWordsByCategory(stop.key),
+        categoryKey: stop.key,
+        label: `${stop.emoji} ${meta.en} · ${meta.ar}`,
+      });
+    });
+    list.appendChild(item);
+  });
+
+  if (certificateEarned) {
+    document.getElementById('cert-btn').addEventListener('click', () => showCertificate('Learning Map Champion'));
+  }
+});
+
+function showCertificate(title) {
+  const overlay = document.createElement('div');
+  overlay.className = 'modal-overlay';
+  overlay.innerHTML = `
+    <div class="cert-card">
+      <div class="cert-border">
+        <div class="cert-ribbon">🏆</div>
+        <div class="cert-title">Certificate of Achievement</div>
+        <div class="cert-subtitle">شهادة تقدير</div>
+        <div class="cert-name">${(profile && profile.name) || 'Star Learner'}</div>
+        <div class="cert-section">${title}</div>
+        <div class="cert-stamp">⭐ Huroof · حروف ⭐</div>
+        <div class="cert-date">${new Date().toLocaleDateString()}</div>
+      </div>
+      <div class="cert-actions">
+        <button class="btn btn-secondary" id="cert-close">Close · إغلاق</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+  setTimeout(() => {
+    if (typeof confetti === 'function') {
+      confetti({ particleCount: 200, spread: 100, origin: { y: 0.5 },
+        colors: ['#FFD600','#FF6B6B','#00BFA5','#7C4DFF'] });
+    }
+  }, 200);
+  overlay.querySelector('#cert-close').addEventListener('click', () => overlay.remove());
+  overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.remove(); });
+}
+
+// ── SIMPLE BOOKS ──────────────────────────────────────────────────────────────
+// Lightweight picture books. Each page has a big visual + a short Arabic
+// phrase + English meaning. Tap the speaker to hear the Arabic via the
+// pre-rendered audio/{id}.mp3 file (works offline, every browser).
+//
+// Book content lives in js/books.js (BOOKS + BOOK_PHRASES) so the audio
+// generator can find it the same way it finds WORDS in data.js.
+
+function renderBooksGrid(container) {
+  container.innerHTML = '';
+  BOOKS.forEach(book => {
+    const btn = document.createElement('button');
+    btn.className = 'book-card';
+    btn.innerHTML = `
+      <span class="book-cover">${book.cover}</span>
+      <span class="book-title-en">${book.title}</span>
+      <span class="book-title-ar arabic">${book.titleAr}</span>
+    `;
+    btn.addEventListener('click', () => showScreen('book', { bookId: book.id }));
+    container.appendChild(btn);
+  });
+}
+
+registerScreen('book', (app, { bookId }) => {
+  const book = BOOKS.find(b => b.id === bookId);
+  if (!book) { showScreen('home'); return; }
+  let pageIdx = 0;
+
+  function render() {
+    const page = BOOK_PHRASE_BY_ID[book.pageIds[pageIdx]];
+    if (!page) { showScreen('home'); return; }
+    const isLast = pageIdx === book.pageIds.length - 1;
+    app.innerHTML = `
+      ${topBar()}
+      <div class="book-screen">
+        <button class="btn btn-secondary" id="back-home" style="margin-bottom:14px;">← Back · رجوع</button>
+        <h2>${book.cover} ${book.title} · <span class="arabic">${book.titleAr}</span></h2>
+        <p class="subtitle">Page ${pageIdx + 1} / ${book.pageIds.length}</p>
+        <div class="book-page">
+          <span class="book-page-visual">${page.visual}</span>
+          <div class="book-page-ar arabic">${page.arabic}</div>
+          <div class="book-page-pron">${page.pronunciation}</div>
+          <div class="book-page-en">${page.english}</div>
+          <button class="speak-btn book-speak" id="book-speak" title="Hear it · اسمع">🔊</button>
+        </div>
+        <div class="book-nav">
+          <button class="btn btn-secondary" id="book-prev" ${pageIdx === 0 ? 'disabled' : ''}>← Prev</button>
+          <span class="book-dots">${book.pageIds.map((_, i) => `<span class="book-dot${i === pageIdx ? ' active' : ''}"></span>`).join('')}</span>
+          <button class="btn btn-primary" id="book-next">${isLast ? 'Done · تمام 🎉' : 'Next →'}</button>
+        </div>
+      </div>
+    `;
+    wireTopBar();
+    document.getElementById('back-home').addEventListener('click', () => showScreen('home'));
+
+    const speakPage = () => Speech.speakWord(page);
+    document.getElementById('book-speak').addEventListener('click', speakPage);
+    // Auto-read on page load (small delay so the user sees the page first)
+    setTimeout(speakPage, 500);
+
+    document.getElementById('book-prev').addEventListener('click', () => {
+      if (pageIdx > 0) { Speech.cancel(); pageIdx--; render(); }
+    });
+    document.getElementById('book-next').addEventListener('click', () => {
+      Speech.cancel();
+      if (isLast) {
+        if (profile) {
+          addStars(profile, 3);
+          saveProfile(profile);
+        }
+        if (typeof confetti === 'function') {
+          confetti({ particleCount: 80, spread: 70, origin: { y: 0.6 } });
+        }
+        showCertificate(`Finished "${book.title}"`);
+        showScreen('home');
+      } else {
+        pageIdx++;
+        render();
+      }
+    });
+  }
+
+  render();
+});
 
 // ── SCREEN: RESULTS ───────────────────────────────────────────────────────────
 registerScreen('results', (app, { results, starsEarned, categoryKey, label, mode, words, modeUnlocked }) => {
@@ -696,6 +1013,13 @@ async function renderGrownupArea(container) {
         <input type="email" class="text-input" id="gu-email" placeholder="parent@email.com" autocomplete="email" inputmode="email" />
         <button class="btn btn-primary gu-btn" id="gu-send-link">Send sign-in link</button>
         <div class="gu-msg" id="gu-msg"></div>
+        <div id="gu-code-row" style="display:none;margin-top:10px;">
+          <input type="text" class="text-input" id="gu-code"
+            placeholder="ABC123" maxlength="6" autocomplete="one-time-code"
+            style="text-transform:uppercase;letter-spacing:6px;font-family:monospace;text-align:center;" />
+          <button class="btn btn-primary gu-btn" id="gu-verify-code" style="margin-top:6px;">Sign in with code</button>
+          <div class="gu-msg" id="gu-code-msg"></div>
+        </div>
       </div>
     `;
   }
@@ -728,6 +1052,11 @@ async function renderGrownupArea(container) {
     const sendBtn = container.querySelector('#gu-send-link');
     const emailInput = container.querySelector('#gu-email');
     const msgEl = container.querySelector('#gu-msg');
+    const codeRow = container.querySelector('#gu-code-row');
+    const codeInput = container.querySelector('#gu-code');
+    const codeBtn = container.querySelector('#gu-verify-code');
+    const codeMsg = container.querySelector('#gu-code-msg');
+    let lastEmail = '';
     sendBtn.addEventListener('click', async () => {
       const email = (emailInput.value || '').trim();
       if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
@@ -740,25 +1069,62 @@ async function renderGrownupArea(container) {
       msgEl.textContent = 'Sending…';
       try {
         await Sync.requestMagicLink(email);
+        lastEmail = email;
         // Clear the offline opt-in so future visits go through the standard signed-in path
         localStorage.removeItem(OFFLINE_OPT_KEY);
-        msgEl.innerHTML = `✓ Link sent to <b>${email}</b>. Open it on this device to finish sign-in.`;
+        msgEl.innerHTML = `✓ Sent to <b>${email}</b>. Tap the link in the email or enter the code below.`;
         sendBtn.textContent = 'Resend';
         sendBtn.disabled = false;
+        codeRow.style.display = 'block';
       } catch (e) {
         msgEl.style.color = 'var(--coral)';
         msgEl.textContent = 'Could not send: ' + e.message;
         sendBtn.disabled = false;
       }
     });
+    if (codeInput) {
+      codeInput.addEventListener('input', () => {
+        codeInput.value = (codeInput.value || '').toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 6);
+      });
+    }
+    codeBtn.addEventListener('click', async () => {
+      const code = (codeInput.value || '').trim().toUpperCase();
+      if (!/^[A-Z0-9]{6}$/.test(code) || !lastEmail) {
+        codeMsg.style.color = 'var(--coral)';
+        codeMsg.textContent = 'Enter the 6-character code from the email';
+        return;
+      }
+      codeBtn.disabled = true;
+      codeMsg.style.color = 'var(--teal-dk)';
+      codeMsg.textContent = 'Verifying…';
+      try {
+        await Sync.verifyCode(lastEmail, code);
+        codeMsg.textContent = '✓ Signed in!';
+        await bootRoute();
+      } catch (e) {
+        codeMsg.style.color = 'var(--coral)';
+        codeMsg.textContent = e.message === 'Invalid or expired code'
+          ? 'Code is wrong or expired. Resend and try again.'
+          : 'Could not verify: ' + e.message;
+        codeBtn.disabled = false;
+      }
+    });
   }
 
-  container.querySelector('#gu-reset').addEventListener('click', () => {
+  container.querySelector('#gu-reset').addEventListener('click', async () => {
     if (!confirm('Reset this profile\'s progress? This cannot be undone.')) return;
+    // Wipe local state
     resetProfile();
+    // If signed in, also push a cleared profile to the server so the next
+    // pullToLocal won't restore the old progress. Keep name/avatar so the
+    // child profile slot still exists.
+    if (typeof Sync !== 'undefined' && Sync.isSignedIn() && Sync.getProfileId()) {
+      try {
+        const cleared = { ...DEFAULT_PROFILE, name: profile && profile.name || 'Child', avatar: profile && profile.avatar || 1 };
+        await Sync.flush(cleared);
+      } catch (e) { /* ignore */ }
+    }
     profile = null;
-    // Also clear remote link so they'll get re-onboarded cleanly
-    if (typeof Sync !== 'undefined') Sync.setProfileId(null);
     bootRoute();
   });
 }

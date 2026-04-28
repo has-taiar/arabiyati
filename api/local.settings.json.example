@@ -9,8 +9,9 @@
     "ACS_CONNECTION_STRING": "endpoint=https://...;accesskey=...",
     "ACS_SENDER_ADDRESS": "DoNotReply@your-acs-domain.azurecomm.net",
     "JWT_SECRET": "change-me-to-a-long-random-string",
-    "MAGIC_LINK_BASE": "https://has-taiar.github.io/arabiyati/#/auth",
-    "ALLOWED_ORIGIN": "https://has-taiar.github.io"
+    "MAGIC_LINK_BASE": "https://huroof.au/#/auth",
+    "ALLOWED_REDIRECT_BASES": "https://huroof.au,https://has-taiar.github.io/arabiyati,http://localhost:8787",
+    "ALLOWED_ORIGIN": "*"
   },
   "Host": {
     "LocalHttpPort": 7071,

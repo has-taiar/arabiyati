@@ -35,8 +35,12 @@ function mountMultipleChoice(container, { words, onComplete, onStar, onCombo }) 
         <div class="mc-speak-row">
           <div class="say-it-prompt" id="mc-say-it"></div>
           <button class="speak-btn" id="mc-speak" title="Hear it · اسمع">🔊</button>
+          <button class="speak-btn" id="mc-mic" title="Listen to yourself · اسمع نفسك" style="border-color:var(--coral);color:var(--coral);">🎤</button>
         </div>
         <span class="mc-pronunc" id="pronunc-hint" style="opacity:0;">${w.pronunciation}</span>
+      </div>
+      <div class="mc-progress-text" style="text-align:center;font-size:0.8rem;color:#888;margin:6px 0;">
+        ${idx + 1} / ${words.length}
       </div>
       <div class="mc-options" id="mc-options"></div>
       <div class="feedback-msg" id="fb-msg"></div>
@@ -45,6 +49,23 @@ function mountMultipleChoice(container, { words, onComplete, onStar, onCombo }) 
     // Speech: "Say it" prompt → auto-speak after 2.5s
     Speech.scheduleSpeak(w, { promptEl: document.getElementById('mc-say-it'), delay: 2500 });
     document.getElementById('mc-speak').addEventListener('click', () => Speech.speakWord(w));
+
+    // Mic / echo-back button
+    const micBtn = document.getElementById('mc-mic');
+    if (!Speech.micSupported || !Speech.micSupported()) {
+      micBtn.style.display = 'none';
+    } else {
+      micBtn.addEventListener('click', () => {
+        const original = micBtn.textContent;
+        Speech.recordAndPlayback({
+          onState: ({ state }) => {
+            if (state === 'recording') { micBtn.textContent = '🔴'; micBtn.disabled = true; }
+            else if (state === 'playing') { micBtn.textContent = '👂'; }
+            else { micBtn.textContent = original; micBtn.disabled = false; }
+          }
+        });
+      });
+    }
 
     const optContainer = document.getElementById('mc-options');
     options.forEach(opt => {
@@ -65,8 +86,11 @@ function mountMultipleChoice(container, { words, onComplete, onStar, onCombo }) 
       showFeedback(true);
       comboCount++;
 
+      // Always count an eventually-correct answer as "correct" so the kid
+      // sees their progress increase. Track first-try separately for star
+      // rewards and accuracy/unlock thresholds.
+      results.correct++;
       if (firstTryFlag) {
-        results.correct++;
         results.firstTry++;
         onStar && onStar(wrongCount === 0 ? 2 : 1);
       } else {

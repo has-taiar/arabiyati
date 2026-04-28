@@ -15,6 +15,10 @@ const Speech = (() => {
 
   let _audioEl = null;
   let _pendingTimeout = null;
+  // Monotonic token: every speakWord/scheduleSpeak/cancel bumps this. A
+  // pending audio.play() promise that resolves after a newer call started
+  // will be ignored, preventing overlapping playback.
+  let _playToken = 0;
 
   // ── Mute ──────────────────────────────────────────────────────────────────
   function isMuted() { return localStorage.getItem(MUTE_KEY) === '1'; }
@@ -44,18 +48,26 @@ const Speech = (() => {
     if (!word || isMuted()) return;
     // Always cancel any pending auto-speak timer & in-flight audio first
     if (_pendingTimeout) { clearTimeout(_pendingTimeout); _pendingTimeout = null; }
+    const myToken = ++_playToken;
     const a = _ensureAudio();
     try { a.pause(); a.currentTime = 0; } catch (e) {}
     a.src = AUDIO_BASE + word.id + '.mp3';
     a.load();   // abort any in-flight previous load
-    LOG('speakWord', word.arabic, '→', a.src);
+    LOG('speakWord', word.arabic, '→', a.src, 'token', myToken);
     const p = a.play();
     if (p && typeof p.catch === 'function') {
-      p.catch(err => WARN('play() rejected (likely needs user gesture):', err && err.message));
+      p.catch(err => WARN('play() rejected:', err && err.message));
+      // If a newer speak started while this play() was still resolving, stop it.
+      p.then(() => {
+        if (myToken !== _playToken) {
+          try { a.pause(); } catch (e) {}
+        }
+      }).catch(() => {});
     }
   }
 
   function cancel() {
+    _playToken++;
     if (_pendingTimeout) { clearTimeout(_pendingTimeout); _pendingTimeout = null; }
     if (_audioEl) { try { _audioEl.pause(); } catch (e) {} }
     if (_recorder && _recorder.state === 'recording') {

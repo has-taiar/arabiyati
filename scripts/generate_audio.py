@@ -1,7 +1,11 @@
 #!/usr/bin/env python3
-"""Generate MP3 pronunciation files for every word in js/data.js using edge-tts.
+"""Generate MP3 pronunciation files for every word/phrase in the JS sources.
 Voice: ar-IQ-RanaNeural (Iraqi Arabic, female, friendly).
 Outputs to audio/{id}.mp3 — only generates missing files (idempotent).
+
+Sources scanned:
+  • js/data.js   (word list)
+  • js/books.js  (book phrases, ids ≥ 1000)
 """
 
 import asyncio
@@ -12,7 +16,7 @@ from pathlib import Path
 import edge_tts
 
 ROOT = Path(__file__).resolve().parent.parent
-DATA_JS = ROOT / "js" / "data.js"
+SOURCES = [ROOT / "js" / "data.js", ROOT / "js" / "books.js"]
 OUT_DIR = ROOT / "audio"
 VOICE = "ar-IQ-RanaNeural"
 
@@ -20,8 +24,15 @@ WORD_RE = re.compile(r"\{id:(\d+),arabic:\"([^\"]+)\"")
 
 
 def parse_words():
-    text = DATA_JS.read_text(encoding="utf-8")
-    return [(int(m.group(1)), m.group(2)) for m in WORD_RE.finditer(text)]
+    seen = {}
+    for path in SOURCES:
+        if not path.exists():
+            continue
+        text = path.read_text(encoding="utf-8")
+        for m in WORD_RE.finditer(text):
+            wid = int(m.group(1))
+            seen.setdefault(wid, m.group(2))  # first wins on duplicate ids
+    return sorted(seen.items())
 
 
 async def synth_one(wid: int, arabic: str, force: bool = False):

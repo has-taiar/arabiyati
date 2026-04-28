@@ -67,14 +67,45 @@ const Sync = (() => {
   }
 
   // ── Auth ──────────────────────────────────────────────────────────────────
+  function _redirectBase() {
+    // Use the page's own origin + path as the magic-link redirect target so
+    // the email link always points back to the site the user signed in from.
+    try {
+      return window.location.origin + window.location.pathname.replace(/\/$/, '') + '/#/auth';
+    } catch (e) {
+      return '';
+    }
+  }
+
   async function requestMagicLink(email) {
-    return _api('/auth/magiclink', { method: 'POST', body: { email } });
+    return _api('/auth/magiclink', {
+      method: 'POST',
+      body: { email, redirect: _redirectBase() }
+    });
   }
 
   async function verifyMagicLink(email, token) {
     // No JWT yet — call directly without auth header
     const res = await fetch(API + `/auth/verify?email=${encodeURIComponent(email)}&token=${encodeURIComponent(token)}`);
     if (!res.ok) throw new Error('verify-failed-' + res.status);
+    const data = await res.json();
+    localStorage.setItem(JWT_KEY, data.jwt);
+    localStorage.setItem(JWT_EMAIL_KEY, email);
+    return data;
+  }
+
+  async function verifyCode(email, code) {
+    if (!isConfigured()) throw new Error('api-not-configured');
+    const res = await fetch(API + '/auth/verifycode', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, code: (code || '').toUpperCase() }),
+    });
+    if (!res.ok) {
+      let err = 'verify-failed';
+      try { const j = await res.json(); if (j && j.error) err = j.error; } catch (e) {}
+      throw new Error(err);
+    }
     const data = await res.json();
     localStorage.setItem(JWT_KEY, data.jwt);
     localStorage.setItem(JWT_EMAIL_KEY, email);
@@ -164,7 +195,7 @@ const Sync = (() => {
 
   return {
     isConfigured, isSignedIn, getEmail, getProfileId, setProfileId, signOut,
-    requestMagicLink, verifyMagicLink, handleAuthCallback,
+    requestMagicLink, verifyMagicLink, verifyCode, handleAuthCallback,
     listProfiles, createRemoteProfile, fetchProfile, deleteRemoteProfile,
     schedulePush, flush, pullToLocal,
   };

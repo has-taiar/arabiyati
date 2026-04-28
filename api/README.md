@@ -13,20 +13,24 @@ even when this API is unreachable — sync is best-effort.
 
 ## Endpoints
 
-| Method | Path                  | Auth   | Purpose                           |
-|--------|-----------------------|--------|-----------------------------------|
-| POST   | `/api/auth/magiclink` | none   | Email a one-time sign-in link     |
-| GET    | `/api/auth/verify`    | none   | Exchange one-time token for JWT   |
-| GET    | `/api/profiles`       | bearer | List parent's child profiles      |
-| POST   | `/api/profiles`       | bearer | Create a child profile            |
-| GET    | `/api/profiles/{id}`  | bearer | Load full profile state JSON      |
-| PUT    | `/api/profiles/{id}`  | bearer | Save full profile state JSON      |
-| DELETE | `/api/profiles/{id}`  | bearer | Delete a child profile            |
-| GET    | `/api/health`         | none   | Liveness probe                    |
+| Method | Path                    | Auth   | Purpose                           |
+|--------|-------------------------|--------|-----------------------------------|
+| POST   | `/api/auth/magiclink`   | none   | Email a one-time sign-in link + 6-char code |
+| GET    | `/api/auth/verify`      | none   | Exchange one-time token for JWT   |
+| POST   | `/api/auth/verifycode`  | none   | Exchange 6-char OTP code for JWT  |
+| GET    | `/api/profiles`         | bearer | List parent's child profiles      |
+| POST   | `/api/profiles`         | bearer | Create a child profile            |
+| GET    | `/api/profiles/{id}`    | bearer | Load full profile state JSON      |
+| PUT    | `/api/profiles/{id}`    | bearer | Save full profile state JSON      |
+| DELETE | `/api/profiles/{id}`    | bearer | Delete a child profile            |
+| GET    | `/api/health`           | none   | Liveness probe                    |
 
 ## Tokens
 
-- **Magic-link token**: 5 min TTL, single-use, stored in `magiclinks` table
+- **Magic-link token** (URL): 5 min TTL, single-use, stored in `magiclinks` table
+- **OTP code** (6 chars, A-Z 2-9): 5 min TTL, single-use, stored alongside the link
+  token in the same row. The user can paste the code instead of clicking the link
+  — useful when the email is on a different device.
 - **JWT** (HS256): 24 h TTL, signed with `JWT_SECRET`, stored client-side
 
 ## Storage tables (auto-created)
@@ -47,8 +51,9 @@ Set on the Function App (Configuration → Application settings):
 | `ACS_CONNECTION_STRING`    | Azure Communication Services resource connection string    |
 | `ACS_SENDER_ADDRESS`       | Verified sender e.g. `DoNotReply@yourdomain.com`           |
 | `JWT_SECRET`               | Long random string (`openssl rand -hex 32`)                |
-| `MAGIC_LINK_BASE`          | `https://has-taiar.github.io/arabiyati/#/auth`             |
-| `ALLOWED_ORIGIN`           | `https://has-taiar.github.io` (or `https://huroof.au`)     |
+| `MAGIC_LINK_BASE`          | `https://huroof.au/#/auth` (default if unset)              |
+| `ALLOWED_REDIRECT_BASES`   | Comma-separated allow-list of redirect base origins clients may pass; defaults to `https://huroof.au,https://has-taiar.github.io/arabiyati,http://localhost:8787` |
+| `ALLOWED_ORIGIN`           | `*` or e.g. `https://huroof.au`                            |
 
 ## One-time Azure setup
 
@@ -81,8 +86,9 @@ JWT=$(openssl rand -hex 32)
 az functionapp config appsettings set -g $RG -n $FA --settings \
   TABLES_CONNECTION_STRING="$TCS" \
   JWT_SECRET="$JWT" \
-  MAGIC_LINK_BASE="https://has-taiar.github.io/arabiyati/#/auth" \
-  ALLOWED_ORIGIN="https://has-taiar.github.io"
+  MAGIC_LINK_BASE="https://huroof.au/#/auth" \
+  ALLOWED_REDIRECT_BASES="https://huroof.au,https://has-taiar.github.io/arabiyati" \
+  ALLOWED_ORIGIN="*"
 # After ACS + domain provisioned, also set ACS_CONNECTION_STRING and ACS_SENDER_ADDRESS
 
 # CORS (in addition to ALLOWED_ORIGIN env var)
