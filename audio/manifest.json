@@ -1,0 +1,1502 @@
+{
+  "1": {
+    "hash": "9515528190c2eda5",
+    "rate": "-15%",
+    "text": "واحد",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "10": {
+    "hash": "f2d35f5ab78606e9",
+    "rate": "-15%",
+    "text": "عشرة",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "100": {
+    "hash": "382f8a16ed8a1730",
+    "rate": "-15%",
+    "text": "خبز",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "1001": {
+    "hash": "356c578111714e18",
+    "rate": "-15%",
+    "text": "تفاحة حمراء",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "1002": {
+    "hash": "6c7cf774d0429854",
+    "rate": "-15%",
+    "text": "شجرة خضراء",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "1003": {
+    "hash": "dfa0d0425544ab88",
+    "rate": "-15%",
+    "text": "شمس صفراء",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "1004": {
+    "hash": "d0e1d5cce7035b1f",
+    "rate": "-15%",
+    "text": "بحر أزرق",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "1005": {
+    "hash": "126c7fc700b9730d",
+    "rate": "-15%",
+    "text": "قطة سوداء",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "1006": {
+    "hash": "4628a78c69263c6b",
+    "rate": "-15%",
+    "text": "وردة وردية",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "101": {
+    "hash": "16279a3c895acf10",
+    "rate": "-15%",
+    "text": "قهوة",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "1011": {
+    "hash": "f438327dc9ecfaeb",
+    "rate": "-15%",
+    "text": "هذا بابا",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "1012": {
+    "hash": "9565f48f9d67ddbf",
+    "rate": "-15%",
+    "text": "هذه ماما",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "1013": {
+    "hash": "16ad3754ad4fc20f",
+    "rate": "-15%",
+    "text": "هذا أخي",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "1014": {
+    "hash": "7933e1c0dc66f14b",
+    "rate": "-15%",
+    "text": "هذه أختي",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "1015": {
+    "hash": "6f2367d8459aee30",
+    "rate": "-15%",
+    "text": "جدي طيب",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "1016": {
+    "hash": "e4980b2a36d63664",
+    "rate": "-15%",
+    "text": "جدتي جميلة",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "102": {
+    "hash": "08e5b5301307d493",
+    "rate": "-15%",
+    "text": "بيضة",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "1021": {
+    "hash": "ca6e182645407142",
+    "rate": "-15%",
+    "text": "بزون صغير",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "1022": {
+    "hash": "9498d6fbdd10cbb1",
+    "rate": "-15%",
+    "text": "كلب لطيف",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "1023": {
+    "hash": "d146cc7d74d4d008",
+    "rate": "-15%",
+    "text": "طير يطير",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "1024": {
+    "hash": "f32b545238db6b66",
+    "rate": "-15%",
+    "text": "أرنب يقفز",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "1025": {
+    "hash": "a7e39b44295c3c3b",
+    "rate": "-15%",
+    "text": "سمكة بالماي",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "1026": {
+    "hash": "936aa9bf5e208922",
+    "rate": "-15%",
+    "text": "أسد قوي",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "103": {
+    "hash": "084bee5c76a9f000",
+    "rate": "-15%",
+    "text": "جبن",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "1031": {
+    "hash": "b401a61a42e013c6",
+    "rate": "-15%",
+    "text": "صباح الخير",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "1032": {
+    "hash": "c8834f942a848914",
+    "rate": "-15%",
+    "text": "مساء الخير",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "1033": {
+    "hash": "fd89bf7ef01d8cbf",
+    "rate": "-15%",
+    "text": "اهلا وسهلا",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "1034": {
+    "hash": "2f525c79a122d756",
+    "rate": "-15%",
+    "text": "مع السلامة",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "1035": {
+    "hash": "584ffc5e41ede81c",
+    "rate": "-15%",
+    "text": "تصبح على خير",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "1036": {
+    "hash": "64d2fd2e2ac9ee8c",
+    "rate": "-15%",
+    "text": "الحمد لله",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "104": {
+    "hash": "2fc7c284ffeeb0fa",
+    "rate": "-15%",
+    "text": "ملح",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "1041": {
+    "hash": "caed4f04ff4adf75",
+    "rate": "-15%",
+    "text": "اني فرحان",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "1042": {
+    "hash": "b853da6866c99d2f",
+    "rate": "-15%",
+    "text": "اني تعبان",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "1043": {
+    "hash": "94f3f9e489afb378",
+    "rate": "-15%",
+    "text": "اني جوعان",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "1044": {
+    "hash": "4ea0189a3678e590",
+    "rate": "-15%",
+    "text": "اني عطشان",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "1045": {
+    "hash": "25c9a4c4b05adee5",
+    "rate": "-15%",
+    "text": "اني زعلان",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "1046": {
+    "hash": "a2e60b0193895aa1",
+    "rate": "-15%",
+    "text": "اني شبعان",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "105": {
+    "hash": "2b7d54ce3b204558",
+    "rate": "-15%",
+    "text": "سمك",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "1051": {
+    "hash": "c3ef0171d19bc460",
+    "rate": "-15%",
+    "text": "هذا بيتي",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "1052": {
+    "hash": "d803ed20ceb15b63",
+    "rate": "-15%",
+    "text": "هذا بابي",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "1053": {
+    "hash": "963f90ae1a0033d1",
+    "rate": "-15%",
+    "text": "هذا شباكي",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "1054": {
+    "hash": "31e6ba594d4c8703",
+    "rate": "-15%",
+    "text": "هذا كرسيي",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "1055": {
+    "hash": "79b85aa87deea57f",
+    "rate": "-15%",
+    "text": "هذا سريري",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "1056": {
+    "hash": "5c3d7c086baf1335",
+    "rate": "-15%",
+    "text": "هذي غرفتي",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "106": {
+    "hash": "9e8e520d541cf8d6",
+    "rate": "-15%",
+    "text": "حلو",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "1061": {
+    "hash": "46996c10c40a432e",
+    "rate": "-15%",
+    "text": "احب التفاح",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "1062": {
+    "hash": "b19a157a424c2801",
+    "rate": "-15%",
+    "text": "احب الموز",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "1063": {
+    "hash": "7902fa2122746aa5",
+    "rate": "-15%",
+    "text": "احب الحليب",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "1064": {
+    "hash": "6d05194aa4c46ceb",
+    "rate": "-15%",
+    "text": "احب الخبز",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "1065": {
+    "hash": "83f9ab2dfc4c7e07",
+    "rate": "-15%",
+    "text": "احب التمر",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "1066": {
+    "hash": "41bd589591a39a45",
+    "rate": "-15%",
+    "text": "احب البطيخ",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "107": {
+    "hash": "33d6f3819d54b59b",
+    "rate": "-15%",
+    "text": "زيت",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "1071": {
+    "hash": "b7270eae18ef4d54",
+    "rate": "-15%",
+    "text": "اروح المدرسة",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "1072": {
+    "hash": "245de48d3f39944d",
+    "rate": "-15%",
+    "text": "اروح السوق",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "1073": {
+    "hash": "6b2947d12b0022b0",
+    "rate": "-15%",
+    "text": "اروح الحديقة",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "1074": {
+    "hash": "7c278621f02701e9",
+    "rate": "-15%",
+    "text": "اروح المسجد",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "1075": {
+    "hash": "b6632f1dc7c18030",
+    "rate": "-15%",
+    "text": "اروح البحر",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "1076": {
+    "hash": "ccf1ed7820a7715a",
+    "rate": "-15%",
+    "text": "اروح بيت جدتي",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "108": {
+    "hash": "540a8e4db52c0129",
+    "rate": "-15%",
+    "text": "عسل",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "1081": {
+    "hash": "f8e57a6f3eb71e55",
+    "rate": "-15%",
+    "text": "اليوم حر",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "1082": {
+    "hash": "25b993bf2c494b3b",
+    "rate": "-15%",
+    "text": "اليوم برد",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "1083": {
+    "hash": "5c207715b5c3c676",
+    "rate": "-15%",
+    "text": "اليوم مطر",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "1084": {
+    "hash": "1bdda886918c2a76",
+    "rate": "-15%",
+    "text": "اليوم شمس",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "1085": {
+    "hash": "2f278433256a73a9",
+    "rate": "-15%",
+    "text": "اليوم ريح",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "1086": {
+    "hash": "33f156740e34ef6f",
+    "rate": "-15%",
+    "text": "اليوم ثلج",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "109": {
+    "hash": "ebddba525f35c665",
+    "rate": "-15%",
+    "text": "كلب",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "1091": {
+    "hash": "c0d9ffd8a31461ae",
+    "rate": "-15%",
+    "text": "من فضلك",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "1092": {
+    "hash": "45b1fc73e6a13cbe",
+    "rate": "-15%",
+    "text": "شكرا",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "1093": {
+    "hash": "3380f3aec5fabde1",
+    "rate": "-15%",
+    "text": "عفوا",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "1094": {
+    "hash": "19ce59eeb0188ac4",
+    "rate": "-15%",
+    "text": "آسف",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "1095": {
+    "hash": "756a68e9a53882bc",
+    "rate": "-15%",
+    "text": "ممكن مساعدة",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "1096": {
+    "hash": "c69201473db37c64",
+    "rate": "-15%",
+    "text": "الله يخليك",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "11": {
+    "hash": "b5847ac66b11240c",
+    "rate": "-15%",
+    "text": "أسود",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "110": {
+    "hash": "fe3f603684929c23",
+    "rate": "-15%",
+    "text": "بزون",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "1101": {
+    "hash": "20501dad1cc56a4b",
+    "rate": "-15%",
+    "text": "واحد بزون",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "1102": {
+    "hash": "090ed897ef6f008b",
+    "rate": "-15%",
+    "text": "اثنين كلاب",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "1103": {
+    "hash": "702df83d25a310b8",
+    "rate": "-15%",
+    "text": "ثلاثة طيور",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "1104": {
+    "hash": "8e41ad3ef0ed1012",
+    "rate": "-15%",
+    "text": "أربعة سمك",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "1105": {
+    "hash": "54ba9d36dafbff83",
+    "rate": "-15%",
+    "text": "خمسة نجوم",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "1106": {
+    "hash": "74b5b0e62764b33d",
+    "rate": "-15%",
+    "text": "ستة وردات",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "111": {
+    "hash": "7d82449e4687ffa4",
+    "rate": "-15%",
+    "text": "حصان",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "1111": {
+    "hash": "b7268d561a2cf4a9",
+    "rate": "-15%",
+    "text": "الصبح حلو",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "1112": {
+    "hash": "f82f7496ddeca52a",
+    "rate": "-15%",
+    "text": "الشمس طالعة",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "1113": {
+    "hash": "db82c8c4aac20cba",
+    "rate": "-15%",
+    "text": "الظهر هنا",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "1114": {
+    "hash": "99e9f5acccccaf78",
+    "rate": "-15%",
+    "text": "العصر زين",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "1115": {
+    "hash": "454082f0cda60e65",
+    "rate": "-15%",
+    "text": "المغرب هلو",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "1116": {
+    "hash": "39f56f587d05ce58",
+    "rate": "-15%",
+    "text": "الليل ظلمة",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "112": {
+    "hash": "27803f6ae06c3431",
+    "rate": "-15%",
+    "text": "طير",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "113": {
+    "hash": "55772945499ecfb0",
+    "rate": "-15%",
+    "text": "بقرة",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "114": {
+    "hash": "94240cd31869a9e2",
+    "rate": "-15%",
+    "text": "خروف",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "115": {
+    "hash": "51a06bfa2417ad3a",
+    "rate": "-15%",
+    "text": "أسد",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "116": {
+    "hash": "2cd48f8428ec92e9",
+    "rate": "-15%",
+    "text": "فيل",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "117": {
+    "hash": "973843418644f277",
+    "rate": "-15%",
+    "text": "دب",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "118": {
+    "hash": "3e401173281b59e6",
+    "rate": "-15%",
+    "text": "أرنب",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "119": {
+    "hash": "1764cbd8800c426a",
+    "rate": "-15%",
+    "text": "قميص",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "12": {
+    "hash": "fcdba3cf885cd9b2",
+    "rate": "-15%",
+    "text": "أبيض",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "120": {
+    "hash": "014851d11db0ad09",
+    "rate": "-15%",
+    "text": "بنطرون",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "121": {
+    "hash": "18c8efa53ae8bb12",
+    "rate": "-15%",
+    "text": "جزمة",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "122": {
+    "hash": "12706fd4063acdcf",
+    "rate": "-15%",
+    "text": "باب",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "123": {
+    "hash": "08b1ec531ea7fa33",
+    "rate": "-15%",
+    "text": "شباك",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "124": {
+    "hash": "28d76d04d528adb8",
+    "rate": "-15%",
+    "text": "كرسي",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "125": {
+    "hash": "8a9d0e6c56ececec",
+    "rate": "-15%",
+    "text": "مفتاح",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "126": {
+    "hash": "f11632353934c0b8",
+    "rate": "-15%",
+    "text": "موبايل",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "127": {
+    "hash": "b83694a44df9e6f2",
+    "rate": "-15%",
+    "text": "تلفزيون",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "128": {
+    "hash": "5e08b2f253d50bae",
+    "rate": "-15%",
+    "text": "سرير",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "129": {
+    "hash": "362269ed1bbc2d0b",
+    "rate": "-15%",
+    "text": "أريد",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "13": {
+    "hash": "2822596a9ac959bf",
+    "rate": "-15%",
+    "text": "أحمر",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "130": {
+    "hash": "fae17ff201db8be2",
+    "rate": "-15%",
+    "text": "أروح",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "131": {
+    "hash": "94a9b2d58076fb93",
+    "rate": "-15%",
+    "text": "أجي",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "132": {
+    "hash": "fe51544163e3b7f9",
+    "rate": "-15%",
+    "text": "آكل",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "133": {
+    "hash": "1a2656631680fd9d",
+    "rate": "-15%",
+    "text": "أشرب",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "134": {
+    "hash": "85385a39f93becc8",
+    "rate": "-15%",
+    "text": "أنام",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "135": {
+    "hash": "b654264ec61e606b",
+    "rate": "-15%",
+    "text": "أحب",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "136": {
+    "hash": "0215bf61388be08b",
+    "rate": "-15%",
+    "text": "أشوف",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "137": {
+    "hash": "33a28268ad0083b4",
+    "rate": "-15%",
+    "text": "أسمع",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "138": {
+    "hash": "f0dead4e4cc1e2b1",
+    "rate": "-15%",
+    "text": "أتكلم",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "139": {
+    "hash": "ba8975d30a43e7be",
+    "rate": "-15%",
+    "text": "أعرف",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "14": {
+    "hash": "fd3c2a5c44605041",
+    "rate": "-15%",
+    "text": "أخضر",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "140": {
+    "hash": "6ad0fedabf55863b",
+    "rate": "-15%",
+    "text": "أقرأ",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "141": {
+    "hash": "8f28af7fc36d667a",
+    "rate": "-15%",
+    "text": "أكتب",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "142": {
+    "hash": "48a60519c4e278c7",
+    "rate": "-15%",
+    "text": "ألعب",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "143": {
+    "hash": "8a96672cd0993314",
+    "rate": "-15%",
+    "text": "أضحك",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "144": {
+    "hash": "7412f16d7e3e3f1b",
+    "rate": "-15%",
+    "text": "شنو",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "145": {
+    "hash": "9ad37a39fce87864",
+    "rate": "-15%",
+    "text": "منو",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "146": {
+    "hash": "de3c8f45edefb54b",
+    "rate": "-15%",
+    "text": "وين",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "147": {
+    "hash": "6a6fbf7bc4c9242d",
+    "rate": "-15%",
+    "text": "شوكت",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "148": {
+    "hash": "75495cc060072877",
+    "rate": "-15%",
+    "text": "ليش",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "149": {
+    "hash": "2b00d307ff33d199",
+    "rate": "-15%",
+    "text": "شكد",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "15": {
+    "hash": "2a722a6b0021f480",
+    "rate": "-15%",
+    "text": "أزرق",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "150": {
+    "hash": "26a901de595b332b",
+    "rate": "-15%",
+    "text": "هسه",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "151": {
+    "hash": "45b1fc73e6a13cbe",
+    "rate": "-15%",
+    "text": "شكرا",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "152": {
+    "hash": "3380f3aec5fabde1",
+    "rate": "-15%",
+    "text": "عفوا",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "153": {
+    "hash": "c0d9ffd8a31461ae",
+    "rate": "-15%",
+    "text": "من فضلك",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "154": {
+    "hash": "19ce59eeb0188ac4",
+    "rate": "-15%",
+    "text": "آسف",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "155": {
+    "hash": "6d125807614235c6",
+    "rate": "-15%",
+    "text": "ايه",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "156": {
+    "hash": "2bd073516a87c409",
+    "rate": "-15%",
+    "text": "لا",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "157": {
+    "hash": "44ec23ca9800de9f",
+    "rate": "-15%",
+    "text": "طيب",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "158": {
+    "hash": "808d0b1ffd0267f0",
+    "rate": "-15%",
+    "text": "يلا",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "159": {
+    "hash": "38576889442e3e30",
+    "rate": "-15%",
+    "text": "بس",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "16": {
+    "hash": "4b3038e79f620ffb",
+    "rate": "-15%",
+    "text": "أصفر",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "160": {
+    "hash": "67daa7eb70fbac9d",
+    "rate": "-15%",
+    "text": "باجر",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "161": {
+    "hash": "4363f467b9971bda",
+    "rate": "-15%",
+    "text": "مدرسة",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "162": {
+    "hash": "4770cf253a8fd7ba",
+    "rate": "-15%",
+    "text": "مستشفى",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "163": {
+    "hash": "5880ddc87bb178bc",
+    "rate": "-15%",
+    "text": "سوق",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "164": {
+    "hash": "9209e5540063046e",
+    "rate": "-15%",
+    "text": "مطعم",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "165": {
+    "hash": "0bb17df74f509167",
+    "rate": "-15%",
+    "text": "دكان",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "166": {
+    "hash": "c6bd75e26a1e561d",
+    "rate": "-15%",
+    "text": "حديقة",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "167": {
+    "hash": "38e54c053c6ae8fd",
+    "rate": "-15%",
+    "text": "مسجد",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "168": {
+    "hash": "eeece760c635f84e",
+    "rate": "-15%",
+    "text": "مطار",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "169": {
+    "hash": "5874c6b4559d54c5",
+    "rate": "-15%",
+    "text": "مدينة",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "17": {
+    "hash": "07293572a1845408",
+    "rate": "-15%",
+    "text": "وردي",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "170": {
+    "hash": "21ecf2c25594f94c",
+    "rate": "-15%",
+    "text": "بحر",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "171": {
+    "hash": "5e44a90fa4e69811",
+    "rate": "-15%",
+    "text": "مطر",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "172": {
+    "hash": "5fe3ed33590328d0",
+    "rate": "-15%",
+    "text": "حر",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "173": {
+    "hash": "080713c30af78731",
+    "rate": "-15%",
+    "text": "برد",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "174": {
+    "hash": "c13941b9a3644004",
+    "rate": "-15%",
+    "text": "ريح",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "175": {
+    "hash": "4665708a217b0d38",
+    "rate": "-15%",
+    "text": "ثلج",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "176": {
+    "hash": "aec2d4ae56642c9d",
+    "rate": "-15%",
+    "text": "نجم",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "177": {
+    "hash": "599815a1cfcda8ee",
+    "rate": "-15%",
+    "text": "سماء",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "178": {
+    "hash": "787e1da1d10fff85",
+    "rate": "-15%",
+    "text": "نار",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "18": {
+    "hash": "7699bfd1d555fa0d",
+    "rate": "-15%",
+    "text": "تمن",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "19": {
+    "hash": "a30c37eabf58b60a",
+    "rate": "-15%",
+    "text": "فراولة",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "2": {
+    "hash": "e09e4606044f21a7",
+    "rate": "-15%",
+    "text": "اثنين",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "20": {
+    "hash": "9ac6036f1833ec5f",
+    "rate": "-15%",
+    "text": "تفاح",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "21": {
+    "hash": "2b727ed4df25de62",
+    "rate": "-15%",
+    "text": "تمر",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "22": {
+    "hash": "b51e3b2060712641",
+    "rate": "-15%",
+    "text": "سكر",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "23": {
+    "hash": "f3f2370542cd038e",
+    "rate": "-15%",
+    "text": "شاي",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "24": {
+    "hash": "817fe184606a236f",
+    "rate": "-15%",
+    "text": "أكل",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "25": {
+    "hash": "795e5a93bd9b4470",
+    "rate": "-15%",
+    "text": "ماي",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "26": {
+    "hash": "5d21699fde134a84",
+    "rate": "-15%",
+    "text": "فواكه",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "27": {
+    "hash": "26341a69ae8a5573",
+    "rate": "-15%",
+    "text": "دجاج",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "28": {
+    "hash": "03a8e793792a30e7",
+    "rate": "-15%",
+    "text": "لحم",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "29": {
+    "hash": "ad55d2a26ff23a8b",
+    "rate": "-15%",
+    "text": "خضار",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "3": {
+    "hash": "d8323c7d8c2b7797",
+    "rate": "-15%",
+    "text": "ثلاثة",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "30": {
+    "hash": "856f41dfa0ea70a3",
+    "rate": "-15%",
+    "text": "بطيخ",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "31": {
+    "hash": "d63a2089ce7f1778",
+    "rate": "-15%",
+    "text": "ياكل",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "32": {
+    "hash": "fe27cf2ef53a59f6",
+    "rate": "-15%",
+    "text": "يشرب",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "33": {
+    "hash": "c37e659993ecc641",
+    "rate": "-15%",
+    "text": "ينام",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "34": {
+    "hash": "9046591730634825",
+    "rate": "-15%",
+    "text": "يلعب",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "35": {
+    "hash": "0a5284dd5df1f192",
+    "rate": "-15%",
+    "text": "يمشي",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "36": {
+    "hash": "6a3f53a23d590a59",
+    "rate": "-15%",
+    "text": "يركض",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "37": {
+    "hash": "57d8a699f393aa1f",
+    "rate": "-15%",
+    "text": "يسبح",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "38": {
+    "hash": "6bc590e3b7c6810d",
+    "rate": "-15%",
+    "text": "يذهب",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "39": {
+    "hash": "2d8c3e549017d261",
+    "rate": "-15%",
+    "text": "فرحان",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "4": {
+    "hash": "5322f6f60175ed76",
+    "rate": "-15%",
+    "text": "أربعة",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "40": {
+    "hash": "350bdc70e0d71e3e",
+    "rate": "-15%",
+    "text": "زعلان",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "41": {
+    "hash": "0f025214f39b1e86",
+    "rate": "-15%",
+    "text": "تعبان",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "42": {
+    "hash": "d3adfe7f4cc8b87b",
+    "rate": "-15%",
+    "text": "جوعان",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "43": {
+    "hash": "106e501068a4b6e1",
+    "rate": "-15%",
+    "text": "شبعان",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "44": {
+    "hash": "53d502c5cde6dd9d",
+    "rate": "-15%",
+    "text": "نعسان",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "45": {
+    "hash": "d989693769ce40c4",
+    "rate": "-15%",
+    "text": "جميل",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "46": {
+    "hash": "75b5080d08fd72b0",
+    "rate": "-15%",
+    "text": "جيد جداً",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "47": {
+    "hash": "e31eba4970f9bf31",
+    "rate": "-15%",
+    "text": "ممتاز",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "48": {
+    "hash": "6429ebf8d3683013",
+    "rate": "-15%",
+    "text": "زين",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "49": {
+    "hash": "11a5e62ff5b463a7",
+    "rate": "-15%",
+    "text": "موزين",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "5": {
+    "hash": "1ba32ae2545bf97f",
+    "rate": "-15%",
+    "text": "خمسة",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "50": {
+    "hash": "ce93177f7cb5ca72",
+    "rate": "-15%",
+    "text": "خوش",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "51": {
+    "hash": "1d35aa4ea9324f28",
+    "rate": "-15%",
+    "text": "مو خوش",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "52": {
+    "hash": "89aef3a3a84bf4c0",
+    "rate": "-15%",
+    "text": "سيارة",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "53": {
+    "hash": "7db0b0bcae065188",
+    "rate": "-15%",
+    "text": "بيت",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "54": {
+    "hash": "40c0f8d20ae8c548",
+    "rate": "-15%",
+    "text": "شارع",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "55": {
+    "hash": "b5cebc68b6be419e",
+    "rate": "-15%",
+    "text": "علم",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "56": {
+    "hash": "c38ede7cfd89ce68",
+    "rate": "-15%",
+    "text": "غرفة",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "57": {
+    "hash": "f71c1748610ec9bb",
+    "rate": "-15%",
+    "text": "شجرة",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "58": {
+    "hash": "37655a7da5be51d9",
+    "rate": "-15%",
+    "text": "كومبيوتر",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "59": {
+    "hash": "0afc9d827f27947b",
+    "rate": "-15%",
+    "text": "ميز",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "6": {
+    "hash": "df6742c458c70d2e",
+    "rate": "-15%",
+    "text": "ستة",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "60": {
+    "hash": "7a94103e47ddaf8b",
+    "rate": "-15%",
+    "text": "عشب",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "61": {
+    "hash": "eb07f635d8831be8",
+    "rate": "-15%",
+    "text": "يوم",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "62": {
+    "hash": "44c3abfb7720d08f",
+    "rate": "-15%",
+    "text": "ساعة",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "63": {
+    "hash": "a67b6409c22e049d",
+    "rate": "-15%",
+    "text": "وقت",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "64": {
+    "hash": "e98b550dc2ec96ec",
+    "rate": "-15%",
+    "text": "سرعة",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "65": {
+    "hash": "dab3417870acee74",
+    "rate": "-15%",
+    "text": "عام / سنة",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "66": {
+    "hash": "fb13a99c408150fc",
+    "rate": "-15%",
+    "text": "مشكلة",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "67": {
+    "hash": "abefda79fae97f54",
+    "rate": "-15%",
+    "text": "أكو",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "68": {
+    "hash": "39b46cc927e11599",
+    "rate": "-15%",
+    "text": "ماكو",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "69": {
+    "hash": "80eff1a750bb5400",
+    "rate": "-15%",
+    "text": "مرحبا",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "7": {
+    "hash": "339eaf337a4c78a0",
+    "rate": "-15%",
+    "text": "سبعة",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "70": {
+    "hash": "169d2c40f8ebdeaa",
+    "rate": "-15%",
+    "text": "سلام عليكم",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "71": {
+    "hash": "83e1440a4e06ecd7",
+    "rate": "-15%",
+    "text": "قمر",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "72": {
+    "hash": "91db13c0ed647f29",
+    "rate": "-15%",
+    "text": "شمس",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "73": {
+    "hash": "f648c3a0fad7c0f0",
+    "rate": "-15%",
+    "text": "أنا",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "74": {
+    "hash": "2d323c34022e8195",
+    "rate": "-15%",
+    "text": "هذا",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "75": {
+    "hash": "e00fdf1bf2474fc7",
+    "rate": "-15%",
+    "text": "هو / هي",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "76": {
+    "hash": "b6a20d8fe7eb280e",
+    "rate": "-15%",
+    "text": "كلش",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "77": {
+    "hash": "c85ff4612f7d44f1",
+    "rate": "-15%",
+    "text": "شلونك",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "78": {
+    "hash": "d47b6f2f04bf3b4d",
+    "rate": "-15%",
+    "text": "شكو ماكو",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "79": {
+    "hash": "f37a79756f0acffa",
+    "rate": "-15%",
+    "text": "بابا",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "8": {
+    "hash": "4fbf97840cf38fbf",
+    "rate": "-15%",
+    "text": "ثمانية",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "80": {
+    "hash": "c1c2a1c2ba9e7a00",
+    "rate": "-15%",
+    "text": "ماما",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "81": {
+    "hash": "f8ac19d897aa1101",
+    "rate": "-15%",
+    "text": "أخ",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "82": {
+    "hash": "1e150629d646bf2e",
+    "rate": "-15%",
+    "text": "أخت",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "83": {
+    "hash": "25a9a93b0dab0a8e",
+    "rate": "-15%",
+    "text": "جدو",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "84": {
+    "hash": "7fa4bca20596a68c",
+    "rate": "-15%",
+    "text": "جدة",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "85": {
+    "hash": "895b3730516e9fbf",
+    "rate": "-15%",
+    "text": "عمو",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "86": {
+    "hash": "02c65cddb16eab02",
+    "rate": "-15%",
+    "text": "عمة",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "87": {
+    "hash": "170abf36c0d837f2",
+    "rate": "-15%",
+    "text": "خال",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "88": {
+    "hash": "ecafcf9b8123daba",
+    "rate": "-15%",
+    "text": "خالة",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "89": {
+    "hash": "fe84cdbe6a8d8f78",
+    "rate": "-15%",
+    "text": "راس",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "9": {
+    "hash": "2a60e1e84b83f852",
+    "rate": "-15%",
+    "text": "تسعة",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "90": {
+    "hash": "d92f3f6466348154",
+    "rate": "-15%",
+    "text": "عين",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "91": {
+    "hash": "e813f700c97f0bdd",
+    "rate": "-15%",
+    "text": "أذن",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "92": {
+    "hash": "232b35bca37008b4",
+    "rate": "-15%",
+    "text": "فم",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "93": {
+    "hash": "ef7c083758119737",
+    "rate": "-15%",
+    "text": "يد",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "94": {
+    "hash": "194ae8aaa9ba44b6",
+    "rate": "-15%",
+    "text": "رجل",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "95": {
+    "hash": "9e12bcbb51cc2263",
+    "rate": "-15%",
+    "text": "شعر",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "96": {
+    "hash": "ea83e168e9f9516a",
+    "rate": "-15%",
+    "text": "أنف",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "97": {
+    "hash": "45da83176920de94",
+    "rate": "-15%",
+    "text": "قلب",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "98": {
+    "hash": "83d03e34737febf2",
+    "rate": "-15%",
+    "text": "بطن",
+    "voice": "ar-IQ-RanaNeural"
+  },
+  "99": {
+    "hash": "efd3aeab5885d3dd",
+    "rate": "-15%",
+    "text": "حليب",
+    "voice": "ar-IQ-RanaNeural"
+  }
+}

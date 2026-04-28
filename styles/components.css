@@ -429,9 +429,16 @@
   display: grid;
   grid-template-columns: 1fr;
   gap: 16px;
+  align-items: start;        /* let each half size to its own content */
 }
 @media (min-width: 720px) {
   .home-halves { grid-template-columns: 1fr 1fr; }
+  /* Make both columns visually balanced — quickplay is short, categories
+     can grow but the "See all" toggle keeps the collapsed state matched. */
+  .home-half {
+    display: flex;
+    flex-direction: column;
+  }
 }
 .home-half-categories .category-grid {
   grid-template-columns: repeat(2, 1fr);
@@ -445,6 +452,26 @@
 @media (min-width: 720px) {
   .home-half-quickplay .game-mode-grid { grid-template-columns: repeat(2, 1fr); }
 }
+
+/* See more / less toggle for categories */
+.cat-toggle-btn {
+  margin-top: 12px;
+  align-self: flex-start;
+  background: transparent;
+  border: 2px dashed var(--brand);
+  color: var(--brand);
+  border-radius: 999px;
+  padding: 8px 16px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+.cat-toggle-btn:hover {
+  background: rgba(0, 0, 0, 0.04);
+  transform: translateY(-1px);
+}
+.cat-toggle-btn:empty { display: none; }
 
 /* ── LEARNING MAP MINI (on home) ── */
 .map-mini {

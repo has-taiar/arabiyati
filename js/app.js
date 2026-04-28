@@ -322,6 +322,7 @@ registerScreen('home', (app) => {
           <h2 class="home-section-title">📚 Categories · الفئات</h2>
           <p class="home-section-sub">Pick a topic to focus on</p>
           <div class="category-grid" id="cat-grid"></div>
+          <button class="cat-toggle-btn" id="cat-toggle" type="button"></button>
         </section>
       </div>
       <section class="home-extra">
@@ -361,29 +362,56 @@ registerScreen('home', (app) => {
   });
 
   const grid = document.getElementById('cat-grid');
-  CATEGORIES.forEach(cat => {
-    const meta = CATEGORY_META[cat] || { en: cat, ar: cat, emoji: '📚', color: '#F5F5F5' };
-    const cp = getCategoryProgress(profile, cat);
-    const total = getWordsByCategory(cat).length;
-    const pct = total > 0 ? Math.round((cp.correct / total) * 100) : 0;
-    const card = document.createElement('button');
-    card.className = 'cat-card';
-    card.style.background = meta.color;
-    card.innerHTML = `
-      <span class="cat-emoji">${meta.emoji}</span>
-      <span class="cat-name-en">${meta.en}</span>
-      <span class="cat-name-ar arabic">${meta.ar}</span>
-      <div class="progress-ring-wrap">${svgRing(pct)}</div>
-    `;
-    card.addEventListener('click', () => {
-      showScreen('modePicker', {
-        words: getWordsByCategory(cat),
-        categoryKey: cat,
-        label: `${meta.emoji} ${meta.en} · ${meta.ar}`
+  const VISIBLE_CATS = 6;             // keep the right column ~ same height
+  const showAllStored = sessionStorage.getItem('home_show_all_cats') === '1';
+  let showAll = showAllStored;
+
+  function renderCats() {
+    grid.innerHTML = '';
+    const list = showAll ? CATEGORIES : CATEGORIES.slice(0, VISIBLE_CATS);
+    list.forEach(cat => {
+      const meta = CATEGORY_META[cat] || { en: cat, ar: cat, emoji: '📚', color: '#F5F5F5' };
+      const cp = getCategoryProgress(profile, cat);
+      const total = getWordsByCategory(cat).length;
+      const pct = total > 0 ? Math.round((cp.correct / total) * 100) : 0;
+      const card = document.createElement('button');
+      card.className = 'cat-card';
+      card.style.background = meta.color;
+      card.innerHTML = `
+        <span class="cat-emoji">${meta.emoji}</span>
+        <span class="cat-name-en">${meta.en}</span>
+        <span class="cat-name-ar arabic">${meta.ar}</span>
+        <div class="progress-ring-wrap">${svgRing(pct)}</div>
+      `;
+      card.addEventListener('click', () => {
+        showScreen('modePicker', {
+          words: getWordsByCategory(cat),
+          categoryKey: cat,
+          label: `${meta.emoji} ${meta.en} · ${meta.ar}`
+        });
       });
+      grid.appendChild(card);
     });
-    grid.appendChild(card);
-  });
+  }
+  renderCats();
+
+  if (CATEGORIES.length > VISIBLE_CATS) {
+    const toggle = document.getElementById('cat-toggle');
+    if (toggle) {
+      const setLabel = () => {
+        toggle.textContent = showAll
+          ? `Show less · أقل ▲`
+          : `See all ${CATEGORIES.length} categories · شوف الكل ▼`;
+      };
+      setLabel();
+      toggle.addEventListener('click', () => {
+        showAll = !showAll;
+        sessionStorage.setItem('home_show_all_cats', showAll ? '1' : '0');
+        renderCats();
+        setLabel();
+      });
+    }
+  }
 
   // Learning map mini-preview
   const mapMini = document.getElementById('learning-map-mini');
