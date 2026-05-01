@@ -337,6 +337,36 @@
 }
 .speak-btn-sm:hover { opacity: 1; transform: scale(1.2); }
 
+/* ── Audio pronunciation feedback (thumbs up/down) ──
+   Small, unobtrusive — collected on the profile and synced to the cloud
+   so we can act on flagged words later. */
+.audio-feedback {
+  display: inline-flex;
+  gap: 2px;
+  align-items: center;
+  margin-left: 4px;
+  flex-shrink: 0;
+}
+.audio-fb-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 0.85rem;
+  line-height: 1;
+  padding: 4px 5px;
+  border-radius: 50%;
+  opacity: 0.35;
+  filter: grayscale(0.6);
+  transition: opacity 0.15s, transform 0.15s, filter 0.15s, background 0.15s;
+}
+.audio-fb-btn:hover { opacity: 0.9; filter: grayscale(0); transform: scale(1.15); }
+.audio-fb-btn.active {
+  opacity: 1;
+  filter: none;
+  background: rgba(0, 0, 0, 0.05);
+  transform: scale(1.05);
+}
+
 /* Mute toggle in top bar */
 .btn-icon.muted { opacity: 0.45; }
 

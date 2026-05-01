@@ -18,6 +18,10 @@ function mountFlashcard(container, { words, onComplete }) {
               <div class="say-it-prompt" id="fc-say-it"></div>
               <button class="speak-btn" id="fc-speak" title="Hear it · اسمع">🔊</button>
               <button class="speak-btn" id="fc-mic" title="Listen to yourself · اسمع نفسك" style="border-color:var(--coral);color:var(--coral);">🎤</button>
+              <div class="audio-feedback" id="fc-feedback" title="Rate this pronunciation">
+                <button class="audio-fb-btn" data-rating="up" aria-label="Pronunciation sounds good">👍</button>
+                <button class="audio-fb-btn" data-rating="down" aria-label="Pronunciation sounds wrong">👎</button>
+              </div>
             </div>
             <span class="flashcard-tap-hint">Tap to flip · اضغط للقلب</span>
           </div>
@@ -54,6 +58,28 @@ function mountFlashcard(container, { words, onComplete }) {
       e.stopPropagation();
       Speech.speakWord(w);
     });
+
+    // Pronunciation feedback (thumbs up/down). Don't flip the card on click.
+    const fbRow = document.getElementById('fc-feedback');
+    function refreshFb() {
+      const cur = Speech.getFeedback(w);
+      fbRow.querySelectorAll('.audio-fb-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.rating === cur);
+      });
+    }
+    fbRow.addEventListener('pointerdown', stopFlip);
+    fbRow.addEventListener('mousedown', stopFlip);
+    fbRow.addEventListener('touchstart', stopFlip, { passive: false });
+    fbRow.querySelectorAll('.audio-fb-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const rating = btn.dataset.rating;
+        const cur = Speech.getFeedback(w);
+        Speech.setFeedback(w, cur === rating ? null : rating);
+        refreshFb();, .audio-feedback
+      });
+    });
+    refreshFb();
     if (!Speech.micSupported()) {
       micBtn.style.display = 'none';
     } else {

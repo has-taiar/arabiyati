@@ -14,6 +14,9 @@ const DEFAULT_PROFILE = {
   daysPlayed: 0,
   gamesPlayed: 0,
   voice: 'rana',          // 'rana' (female) or 'bassel' (male) — Iraqi Arabic TTS
+  // Pronunciation feedback collected from users — keyed "{voice}/{wordId}".
+  // Value: { rating: 'up' | 'down', ts: <unix-ms> }. Synced via profile push.
+  audioFeedback: {},
 };
 
 function loadProfile() {

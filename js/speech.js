@@ -57,6 +57,35 @@ const Speech = (() => {
     cancel();
   }
 
+  // ── Pronunciation feedback (thumbs up / down) ─────────────────────────────
+  // Stored on the active profile under `audioFeedback` so it auto-syncs to
+  // the cloud via the existing profile push pipeline. Keyed by
+  // "{voice}/{wordId}" so up/down can differ per voice.
+  function _feedbackKey(word, voice) {
+    return (voice || getVoice()) + '/' + word.id;
+  }
+  function getFeedback(word) {
+    try {
+      if (typeof profile === 'undefined' || !profile || !profile.audioFeedback) return null;
+      const entry = profile.audioFeedback[_feedbackKey(word)];
+      return entry ? entry.rating : null;
+    } catch (e) { return null; }
+  }
+  function setFeedback(word, rating) {
+    // rating: 'up' | 'down' | null (null clears)
+    try {
+      if (typeof profile === 'undefined' || !profile) return;
+      if (!profile.audioFeedback) profile.audioFeedback = {};
+      const k = _feedbackKey(word);
+      if (rating === null || rating === undefined) {
+        delete profile.audioFeedback[k];
+      } else if (rating === 'up' || rating === 'down') {
+        profile.audioFeedback[k] = { rating, ts: Date.now() };
+      } else { return; }
+      if (typeof saveProfile === 'function') saveProfile(profile);
+    } catch (e) { WARN('setFeedback failed', e); }
+  }
+
   // ── Playback ──────────────────────────────────────────────────────────────
   function _ensureAudio() {
     if (!_audioEl) {
@@ -319,12 +348,26 @@ const Speech = (() => {
     };
   }
 
+  // Dev helper — list all flagged pronunciations on this profile.
+  // Usage from DevTools: copy(JSON.stringify(Speech.dumpFeedback(), null, 2))
+  function dumpFeedback() {
+    try {
+      const fb = (typeof profile !== 'undefined' && profile && profile.audioFeedback) || {};
+      return Object.entries(fb).map(([k, v]) => {
+        const [voice, id] = k.split('/');
+        return { voice, id, rating: v.rating, ts: v.ts };
+      });
+    } catch (e) { return []; }
+  }
+
   return {
     speakWord, cancel, scheduleSpeak,
     isMuted, setMuted, toggleMuted,
     getVoice, setVoice, VALID_VOICES,
+    getFeedback, setFeedback,
     recordAndPlayback, micSupported, micConsented,
     diagnose,
+    dumpFeedback,
     // back-compat shims (some callers still expect these):
     isSupported: () => true,
   };
