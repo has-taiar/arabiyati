@@ -18,10 +18,6 @@ function mountFlashcard(container, { words, onComplete }) {
               <div class="say-it-prompt" id="fc-say-it"></div>
               <button class="speak-btn" id="fc-speak" title="Hear it · اسمع">🔊</button>
               <button class="speak-btn" id="fc-mic" title="Listen to yourself · اسمع نفسك" style="border-color:var(--coral);color:var(--coral);">🎤</button>
-              <div class="audio-feedback" id="fc-feedback" title="Rate this pronunciation">
-                <button class="audio-fb-btn" data-rating="up" aria-label="Pronunciation sounds good">👍</button>
-                <button class="audio-fb-btn" data-rating="down" aria-label="Pronunciation sounds wrong">👎</button>
-              </div>
             </div>
             <span class="flashcard-tap-hint">Tap to flip · اضغط للقلب</span>
           </div>
@@ -37,9 +33,15 @@ function mountFlashcard(container, { words, onComplete }) {
         <button class="btn-knew-it" id="btn-knew">✓ I knew it! · عرفتها!</button>
         <button class="btn-still-learning" id="btn-learn">Still learning · أتعلم</button>
       </div>
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:16px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:16px;gap:8px;">
         <button class="btn btn-secondary" id="fc-prev" ${idx === 0 ? 'disabled' : ''}>← Prev</button>
-        <span style="font-size:0.85rem;color:#888;">${idx + 1} / ${words.length}</span>
+        <div class="fc-nav-center">
+          <div class="audio-feedback" id="fc-feedback" title="Rate this pronunciation · قيّم النطق">
+            <button class="audio-fb-btn" data-rating="up" aria-label="Pronunciation sounds good">👍</button>
+            <button class="audio-fb-btn" data-rating="down" aria-label="Pronunciation sounds wrong">👎</button>
+          </div>
+          <span class="fc-counter">${idx + 1} / ${words.length}</span>
+        </div>
         <button class="btn btn-secondary" id="fc-next" ${idx === words.length - 1 ? 'disabled style="opacity:0.4"' : ''}>Next →</button>
       </div>
     `;
@@ -59,7 +61,8 @@ function mountFlashcard(container, { words, onComplete }) {
       Speech.speakWord(w);
     });
 
-    // Pronunciation feedback (thumbs up/down). Don't flip the card on click.
+    // Pronunciation feedback (thumbs up/down) — lives outside the card,
+    // between Prev/Next, so no flip-suppression hacks are needed.
     const fbRow = document.getElementById('fc-feedback');
     function refreshFb() {
       const cur = Speech.getFeedback(w);
@@ -67,16 +70,12 @@ function mountFlashcard(container, { words, onComplete }) {
         btn.classList.toggle('active', btn.dataset.rating === cur);
       });
     }
-    fbRow.addEventListener('pointerdown', stopFlip);
-    fbRow.addEventListener('mousedown', stopFlip);
-    fbRow.addEventListener('touchstart', stopFlip, { passive: false });
     fbRow.querySelectorAll('.audio-fb-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        e.stopPropagation();
+      btn.addEventListener('click', () => {
         const rating = btn.dataset.rating;
         const cur = Speech.getFeedback(w);
         Speech.setFeedback(w, cur === rating ? null : rating);
-        refreshFb();, .audio-feedback
+        refreshFb();
       });
     });
     refreshFb();

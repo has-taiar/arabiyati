@@ -338,33 +338,43 @@
 .speak-btn-sm:hover { opacity: 1; transform: scale(1.2); }
 
 /* ── Audio pronunciation feedback (thumbs up/down) ──
-   Small, unobtrusive — collected on the profile and synced to the cloud
-   so we can act on flagged words later. */
+   Sits below the flashcard, centred between Prev/Next, with the page
+   counter beneath. Small and unobtrusive — collected on the profile and
+   synced to the cloud so we can act on flagged words later. */
+.fc-nav-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  flex: 1;
+}
+.fc-counter {
+  font-size: 0.85rem;
+  color: #888;
+}
 .audio-feedback {
   display: inline-flex;
-  gap: 2px;
+  gap: 4px;
   align-items: center;
-  margin-left: 4px;
-  flex-shrink: 0;
 }
 .audio-fb-btn {
   background: transparent;
   border: none;
   cursor: pointer;
-  font-size: 0.85rem;
+  font-size: 1rem;
   line-height: 1;
-  padding: 4px 5px;
+  padding: 4px 6px;
   border-radius: 50%;
-  opacity: 0.35;
+  opacity: 0.4;
   filter: grayscale(0.6);
   transition: opacity 0.15s, transform 0.15s, filter 0.15s, background 0.15s;
 }
-.audio-fb-btn:hover { opacity: 0.9; filter: grayscale(0); transform: scale(1.15); }
+.audio-fb-btn:hover { opacity: 0.95; filter: grayscale(0); transform: scale(1.15); }
 .audio-fb-btn.active {
   opacity: 1;
   filter: none;
-  background: rgba(0, 0, 0, 0.05);
-  transform: scale(1.05);
+  background: rgba(0, 0, 0, 0.06);
+  transform: scale(1.1);
 }
 
 /* Mute toggle in top bar */
