@@ -9,7 +9,15 @@
 const Speech = (() => {
   const MUTE_KEY = 'arabiyati_speech_muted';
   const MIC_OK_KEY = 'arabiyati_mic_consent';
-  const AUDIO_BASE = 'audio/';
+  const VOICE_KEY = 'arabiyati_speech_voice';
+  // Audio is served from Azure Blob Storage (public-read CDN). Falls back to
+  // local relative path when running from file:// or if window.AUDIO_BASE_URL
+  // override is set (useful for local dev with `python -m http.server`).
+  const AUDIO_BASE = (typeof window !== 'undefined' && window.AUDIO_BASE_URL)
+    ? window.AUDIO_BASE_URL
+    : 'https://huroofaudio6813.blob.core.windows.net/audio/';
+  const VALID_VOICES = ['rana', 'bassel'];
+  const DEFAULT_VOICE = 'rana';
   const LOG = (...a) => { try { console.log('[Speech]', ...a); } catch (e) {} };
   const WARN = (...a) => { try { console.warn('[Speech]', ...a); } catch (e) {} };
 
@@ -32,6 +40,23 @@ const Speech = (() => {
     return next;
   }
 
+  // ── Voice selection (rana / bassel) ───────────────────────────────────────
+  function getVoice() {
+    // Prefer the active profile's choice, fall back to localStorage, then default.
+    try {
+      if (typeof profile !== 'undefined' && profile && profile.voice && VALID_VOICES.includes(profile.voice)) {
+        return profile.voice;
+      }
+    } catch (e) {}
+    const v = localStorage.getItem(VOICE_KEY);
+    return VALID_VOICES.includes(v) ? v : DEFAULT_VOICE;
+  }
+  function setVoice(v) {
+    if (!VALID_VOICES.includes(v)) return;
+    localStorage.setItem(VOICE_KEY, v);
+    cancel();
+  }
+
   // ── Playback ──────────────────────────────────────────────────────────────
   function _ensureAudio() {
     if (!_audioEl) {
@@ -51,7 +76,7 @@ const Speech = (() => {
     const myToken = ++_playToken;
     const a = _ensureAudio();
     try { a.pause(); a.currentTime = 0; } catch (e) {}
-    const targetSrc = AUDIO_BASE + word.id + '.mp3';
+    const targetSrc = AUDIO_BASE + getVoice() + '/' + word.id + '.mp3';
     a.src = targetSrc;
     a.load();   // abort any in-flight previous load
     LOG('speakWord', word.arabic, '→', a.src, 'token', myToken);
@@ -297,6 +322,7 @@ const Speech = (() => {
   return {
     speakWord, cancel, scheduleSpeak,
     isMuted, setMuted, toggleMuted,
+    getVoice, setVoice, VALID_VOICES,
     recordAndPlayback, micSupported, micConsented,
     diagnose,
     // back-compat shims (some callers still expect these):

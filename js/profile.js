@@ -13,6 +13,7 @@ const DEFAULT_PROFILE = {
   totalCorrect: 0,
   daysPlayed: 0,
   gamesPlayed: 0,
+  voice: 'rana',          // 'rana' (female) or 'bassel' (male) — Iraqi Arabic TTS
 };
 
 function loadProfile() {

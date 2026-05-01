@@ -932,6 +932,22 @@ registerScreen('profile', (app) => {
       <div class="section-header">Badges · الشارات</div>
       <div class="badge-grid" id="badge-grid"></div>
 
+      <div class="section-header">Voice · الصوت</div>
+      <div class="voice-picker" id="voice-picker">
+        <button class="voice-option" data-voice="rana">
+          <span class="voice-emoji">👩</span>
+          <div class="voice-name">Rana · رنا</div>
+          <div class="voice-sub">Female · Iraqi</div>
+          <button class="voice-preview" data-voice="rana" title="Preview">▶</button>
+        </button>
+        <button class="voice-option" data-voice="bassel">
+          <span class="voice-emoji">👨</span>
+          <div class="voice-name">Bassel · باسل</div>
+          <div class="voice-sub">Male · Iraqi</div>
+          <button class="voice-preview" data-voice="bassel" title="Preview">▶</button>
+        </button>
+      </div>
+
       <div class="grownup-card" id="grownup-card">
         <div class="grownup-locked" id="grownup-locked">
           <span class="grownup-icon">🔒</span>
@@ -964,6 +980,42 @@ registerScreen('profile', (app) => {
       const u = document.getElementById('grownup-unlocked');
       u.style.display = 'block';
       renderGrownupArea(u);
+    });
+  });
+
+  // ── Voice picker ─────────────────────────────────────────────────────────
+  function refreshVoiceUI() {
+    const cur = (profile.voice && ['rana','bassel'].includes(profile.voice)) ? profile.voice : 'rana';
+    document.querySelectorAll('#voice-picker .voice-option').forEach(btn => {
+      btn.classList.toggle('selected', btn.dataset.voice === cur);
+    });
+  }
+  refreshVoiceUI();
+  document.querySelectorAll('#voice-picker .voice-option').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      // Ignore clicks that came from the inner preview button
+      if (e.target.closest('.voice-preview')) return;
+      const v = btn.dataset.voice;
+      if (!v || profile.voice === v) return;
+      profile.voice = v;
+      saveProfile(profile);
+      Speech.setVoice(v);
+      refreshVoiceUI();
+    });
+  });
+  document.querySelectorAll('#voice-picker .voice-preview').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const v = btn.dataset.voice;
+      // Temporarily speak with this voice without changing the saved pref
+      const prev = profile.voice;
+      profile.voice = v;
+      // hello in Iraqi: مرحبا (id=1097 if present); fallback to a known id
+      const sample = (typeof WORDS !== 'undefined' && WORDS.find(w => w.arabic === 'مرحبا'))
+        || { id: 1, arabic: 'واحد' };
+      Speech.speakWord(sample);
+      // restore preference after a short delay (audio is queued by id, not by voice prop)
+      setTimeout(() => { profile.voice = prev; }, 50);
     });
   });
 });

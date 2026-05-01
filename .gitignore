@@ -4,3 +4,9 @@ __pycache__/
 .DS_Store
 
 .env
+
+# Audio is hosted on Azure Blob Storage; do not commit binaries.
+audio/rana/*.mp3
+audio/bassel/*.mp3
+# legacy flat layout (already removed)
+audio/*.mp3

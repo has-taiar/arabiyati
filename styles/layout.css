@@ -260,6 +260,56 @@
 .badge-item.locked { opacity: 0.35; filter: grayscale(1); }
 .badge-item .badge-emoji { font-size: 1.8rem; display: block; margin-bottom: 4px; }
 
+/* ── VOICE PICKER ── */
+.voice-picker {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 8px;
+}
+.voice-option {
+  position: relative;
+  background: var(--white);
+  border: 2px solid transparent;
+  border-radius: var(--radius-sm);
+  padding: 14px 10px 12px;
+  text-align: center;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.12s ease, border-color 0.12s ease;
+  font-family: inherit;
+}
+.voice-option:hover { transform: translateY(-1px); }
+.voice-option.selected {
+  border-color: var(--teal-dk, #00838F);
+  background: linear-gradient(160deg, #E0F7FA 0%, #FFF 100%);
+}
+.voice-option.selected::after {
+  content: '✓';
+  position: absolute;
+  top: 6px; left: 8px;
+  font-size: 0.85rem;
+  font-weight: 900;
+  color: var(--teal-dk, #00838F);
+}
+.voice-option .voice-emoji { font-size: 2rem; display: block; margin-bottom: 4px; }
+.voice-option .voice-name { font-weight: 800; font-size: 0.95rem; }
+.voice-option .voice-sub { font-size: 0.72rem; color: #777; margin-top: 2px; }
+.voice-option .voice-preview {
+  position: absolute;
+  top: 6px; right: 6px;
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  border: none;
+  background: var(--teal-dk, #00838F);
+  color: #fff;
+  font-size: 0.7rem;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  padding: 0;
+}
+.voice-option .voice-preview:hover { transform: scale(1.08); }
+
 /* ── ONBOARDING ── */
 .onboarding-screen {
   display: flex;

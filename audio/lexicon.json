@@ -1,0 +1,16 @@
+{
+  "_comment": "Per-word IPA pronunciation overrides applied via SSML <phoneme> when backend=azure. Each entry maps the source Arabic spelling to an IPA pronunciation that matches Iraqi (Mesopotamian) Arabic. Add entries for any word that the Azure ar-IQ neural voices read with MSA pronunciation instead of Iraqi.",
+  "_alphabet": "ipa",
+  "_format": "{ \"<arabic word>\": { \"ipa\": \"<ipa>\", \"note\": \"<optional>\" } }",
+  "entries": {
+    "شلونك": { "ipa": "ʃloːnak", "note": "how are you (m)" },
+    "شلونچ": { "ipa": "ʃloːnitʃ", "note": "how are you (f) — Iraqi ك→چ" },
+    "اكو":   { "ipa": "ʔaku",     "note": "there is" },
+    "ماكو":  { "ipa": "maːku",    "note": "there isn't" },
+    "هواية": { "ipa": "hwaːja",   "note": "very/a lot (Iraqi)" },
+    "جنت":   { "ipa": "tʃinit",   "note": "I was" },
+    "گول":   { "ipa": "guːl",     "note": "say (imp)" },
+    "گلت":   { "ipa": "gilit",    "note": "I said" },
+    "چان":   { "ipa": "tʃaːn",    "note": "was" }
+  }
+}
